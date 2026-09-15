@@ -1,0 +1,57 @@
+{
+  "id": "chat.migrated",
+  "category": "target_migration",
+  "summary": "The group has moved to a supergroup with a new ID.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "required_parameters": {
+        "migrate_to_chat_id": "nonzero_integer"
+      }
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The request addresses a group that was upgraded to a supergroup."
+  ],
+  "diagnostic_limits": "Use the structured replacement identifier; a description alone does not supply the new target.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        8821,
+        8827
+      ],
+      "note": "The replacement chat ID is placed in response parameters."
+    },
+    {
+      "source": "response-parameters",
+      "note": "Documents migrate_to_chat_id, including its maximum of 52 significant bits."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: group chat was upgraded to a supergroup chat",
+      "parameters": {
+        "migrate_to_chat_id": -1001234567890
+      }
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "migrate_chat_reference",
+    "repeat_request": "after_target_update",
+    "preconditions": [
+      "Update the intended chat reference from parameters.migrate_to_chat_id, account for concurrent updates, and bound retries."
+    ]
+  }
+}

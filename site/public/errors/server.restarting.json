@@ -1,0 +1,46 @@
+{
+  "id": "server.restarting",
+  "category": "server_lifecycle",
+  "summary": "The bot client is closing for a server restart.",
+  "match_any": [
+    {
+      "error_code": 500,
+      "description_exact": "Internal Server Error: restart"
+    }
+  ],
+  "scope": {
+    "method_examples": [],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The bot client is closing without taking the logout branches."
+  ],
+  "diagnostic_limits": "An exception wrapper that discarded the original 5xx description cannot recover this distinction from the status alone.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        17560,
+        17564
+      ],
+      "note": "The closing error is passed directly to fail_query by fail_query_closing."
+    }
+  ],
+  "example": {
+    "method": "getMe",
+    "response": {
+      "ok": false,
+      "error_code": 500,
+      "description": "Internal Server Error: restart"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "backoff_and_reassess_operation",
+    "repeat_request": "policy_dependent",
+    "preconditions": [
+      "Apply bounded backoff and evaluate whether repeating the particular operation is safe; do not derive replay safety from a 5xx status alone."
+    ]
+  }
+}

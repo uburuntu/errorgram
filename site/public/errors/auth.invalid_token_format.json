@@ -1,0 +1,48 @@
+{
+  "id": "auth.invalid_token_format",
+  "category": "authentication",
+  "summary": "The server rejected the token during local validation.",
+  "match_any": [
+    {
+      "error_code": 401,
+      "description_exact": "Unauthorized: invalid token specified"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "getMe"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "A locally checked token structure or numeric identifier constraint failed."
+  ],
+  "diagnostic_limits": "This signature is narrower than generic Unauthorized. Other malformed-token paths may produce different codes.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/ClientManager.cpp",
+      "lines": [
+        73,
+        84
+      ],
+      "note": "Two local checks return this exact response; the intervening check can return 421."
+    }
+  ],
+  "example": {
+    "method": "getMe",
+    "response": {
+      "ok": false,
+      "error_code": 401,
+      "description": "Unauthorized: invalid token specified"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "correct_token_configuration",
+    "repeat_request": "after_configuration_change",
+    "preconditions": [
+      "Verify the configured token without placing it in logs or inventory submissions."
+    ]
+  }
+}

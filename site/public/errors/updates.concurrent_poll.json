@@ -1,0 +1,48 @@
+{
+  "id": "updates.concurrent_poll",
+  "category": "update_delivery_concurrency",
+  "summary": "Another getUpdates request interrupted the pending long poll.",
+  "match_any": [
+    {
+      "error_code": 409,
+      "description_exact": "Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "getUpdates"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "Overlapping getUpdates requests for the same bot."
+  ],
+  "diagnostic_limits": "Overlapping requests may originate in one process or multiple deployments; the response does not prove how many bot processes exist.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        17493,
+        17514
+      ],
+      "note": "The alternate branch emits a different description for termination by setWebhook."
+    }
+  ],
+  "example": {
+    "method": "getUpdates",
+    "response": {
+      "ok": false,
+      "error_code": 409,
+      "description": "Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "ensure_single_polling_owner",
+    "repeat_request": "after_concurrency_change",
+    "preconditions": [
+      "Stop competing polling loops or establish ownership before resuming."
+    ]
+  }
+}

@@ -19,6 +19,7 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/uburuntu/errorgram"
+Documentation = "https://errorgram.rmbk.me/"
 Source = "https://github.com/uburuntu/errorgram"
 Issues = "https://github.com/uburuntu/errorgram/issues"
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Understand Telegram Bot API errors with stable IDs and clear diagnostics.",
   "license": "MIT",
-  "homepage": "https://github.com/uburuntu/errorgram#readme",
+  "homepage": "https://errorgram.rmbk.me/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/uburuntu/errorgram.git",

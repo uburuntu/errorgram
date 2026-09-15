@@ -1,0 +1,59 @@
+{
+  "id": "chat.not_found",
+  "category": "target_resolution",
+  "summary": "The bot could not resolve this chat.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: chat not found"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "getChat"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "An upstream lookup error was replaced with the generic chat lookup message.",
+    "A username resolved to a chat type that this lookup does not allow."
+  ],
+  "diagnostic_limits": "This is not proof that the chat was deleted, the bot was blocked, or the identifier is permanently unusable.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        7239,
+        7266
+      ],
+      "note": "A fallback masks upstream 400-class errors, and a separate local branch emits the same description."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        108
+      ],
+      "note": "Some upstream codes are converted to 400 before the fallback description is applied."
+    }
+  ],
+  "example": {
+    "method": "getChat",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: chat not found"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "inspect_target_and_access",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Verify the identifier, target type and bot access before changing stored chat records."
+    ]
+  }
+}

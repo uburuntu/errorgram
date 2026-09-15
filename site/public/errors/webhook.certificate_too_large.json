@@ -1,0 +1,64 @@
+{
+  "id": "webhook.certificate_too_large",
+  "category": "webhook_configuration",
+  "summary": "The uploaded webhook certificate exceeds the server’s size limit.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_template": "Bad Request: certificate size is too big ({size_bytes} bytes)",
+      "capture_types": {
+        "size_bytes": "positive_integer"
+      }
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "setWebhook"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The uploaded certificate file is larger than MAX_CERTIFICATE_FILE_SIZE."
+  ],
+  "diagnostic_limits": "The captured size describes the rejected upload; it is not the configured limit or a Telegram media limit.",
+  "facts": {
+    "verified_limit_bytes": 3145728,
+    "limit_version_source": "server-10.3"
+  },
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        17261,
+        17266
+      ],
+      "note": "The description interpolates the actual file size; one literal string cannot represent all responses."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.h",
+      "lines": [
+        71,
+        71
+      ],
+      "note": "The constant is 3 << 20 bytes in this revision."
+    }
+  ],
+  "example": {
+    "method": "setWebhook",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: certificate size is too big (4194304 bytes)"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "correct_webhook_certificate_file",
+    "repeat_request": "after_payload_change",
+    "preconditions": [
+      "Verify that the uploaded file is the intended certificate and satisfies this server revision's limit."
+    ]
+  }
+}

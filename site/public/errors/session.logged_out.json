@@ -1,0 +1,55 @@
+{
+  "id": "session.logged_out",
+  "category": "server_lifecycle",
+  "summary": "The bot session has logged out.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Logged out"
+    }
+  ],
+  "scope": {
+    "method_examples": [],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The server is completing a bot logout."
+  ],
+  "diagnostic_limits": "Not every 400 response begins with Bad Request. This signature alone does not explain why logout was initiated.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        17553,
+        17555
+      ],
+      "note": "Stores a 400 description with no Bad Request prefix."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        17520,
+        17525
+      ],
+      "note": "The direct fail_query path preserves that description."
+    }
+  ],
+  "example": {
+    "method": "getMe",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Logged out"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "reconcile_bot_session_lifecycle",
+    "repeat_request": "after_lifecycle_resolution",
+    "preconditions": [
+      "Determine whether logout or a server move was intentional before resuming requests."
+    ]
+  }
+}

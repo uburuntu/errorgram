@@ -1,0 +1,49 @@
+{
+  "id": "message.delete_forbidden",
+  "category": "operation_not_allowed",
+  "summary": "Telegram rejected deletion of the message.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: message can't be deleted"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "deleteMessage",
+      "deleteMessages"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "A permissions, message-type or message-age restriction may prevent deletion."
+  ],
+  "diagnostic_limits": "The source proves the response mapping, not which deletion restriction caused a particular failure. The causes above are diagnostic hypotheses.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        151,
+        153
+      ],
+      "note": "MESSAGE_DELETE_FORBIDDEN is rewritten before the Bad Request prefix is added."
+    }
+  ],
+  "example": {
+    "method": "deleteMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: message can't be deleted"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "check_deletion_eligibility",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Check the current deleteMessage rules and bot permissions; a permanent message restriction may have no repair."
+    ]
+  }
+}

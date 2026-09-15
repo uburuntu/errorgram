@@ -1,0 +1,48 @@
+{
+  "id": "updates.webhook_active",
+  "category": "update_delivery_configuration",
+  "summary": "Polling was requested while a webhook is active or being configured.",
+  "match_any": [
+    {
+      "error_code": 409,
+      "description_exact": "Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "getUpdates"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The bot has an active or pending webhook configuration."
+  ],
+  "diagnostic_limits": "This is a different condition from two simultaneous getUpdates requests.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        16926,
+        16931
+      ],
+      "note": "Checks configured and pending webhook state before polling."
+    }
+  ],
+  "example": {
+    "method": "getUpdates",
+    "response": {
+      "ok": false,
+      "error_code": 409,
+      "description": "Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "choose_update_delivery_mode",
+    "repeat_request": "after_configuration_change",
+    "preconditions": [
+      "If polling is intended, remove the webhook deliberately; if webhooks are intended, stop polling."
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+# Errorgram
+
+> An open inventory of Telegram Bot API errors, with stable IDs and bindings
+> for Python, JavaScript, TypeScript, aiogram, and grammY.
+
+Use the JSON catalogue for matching rules and Markdown for explanations.
+IDs describe observable conditions; they do not prove one underlying cause.
+Transport failures and framework validation are outside this inventory.
+Enrichment is opt-in. Errorgram does not retry, suppress errors, or change bot state.
+
+Telegram Bot API error responses. Source-derived; hosted deployment behavior is unverified.
+Synthetic examples derived from the cited source.
+
+Catalogue 0.1.0 · schema 1.0.0 · reviewed 2026-09-15.
+
+## Documentation
+
+- [Telegram errors, explained.](https://errorgram.rmbk.me/index.md)
+- [Get started](https://errorgram.rmbk.me/getting-started.md)
+- [Python &amp; aiogram](https://errorgram.rmbk.me/python.md)
+- [JavaScript &amp; grammY](https://errorgram.rmbk.me/javascript.md)
+- [How matching works](https://errorgram.rmbk.me/matching.md)
+- [Contribute a condition](https://errorgram.rmbk.me/contributing.md)
+- [Follow upstream changes](https://errorgram.rmbk.me/updating.md)
+- [For AI agents](https://errorgram.rmbk.me/agents.md)
+- [Error catalogue](https://errorgram.rmbk.me/catalogue.md)
+
+## Structured data
+
+- [Catalogue JSON](https://errorgram.rmbk.me/catalogue.json): complete records and sources.
+- [JSON Schema](https://errorgram.rmbk.me/schema.json): validates catalogue structure.
+- [Full documentation](https://errorgram.rmbk.me/llms-full.txt): guides and all conditions.
+
+## Error conditions
+
+- [auth.invalid\_token\_format](https://errorgram.rmbk.me/errors/auth.invalid_token_format/): The server rejected the token during local validation. ([Markdown](https://errorgram.rmbk.me/errors/auth.invalid_token_format.md); [JSON](https://errorgram.rmbk.me/errors/auth.invalid_token_format.json))
+- [bot.blocked\_by\_user](https://errorgram.rmbk.me/errors/bot.blocked_by_user/): The user has blocked the bot. ([Markdown](https://errorgram.rmbk.me/errors/bot.blocked_by_user.md); [JSON](https://errorgram.rmbk.me/errors/bot.blocked_by_user.json))
+- [chat.migrated](https://errorgram.rmbk.me/errors/chat.migrated/): The group has moved to a supergroup with a new ID. ([Markdown](https://errorgram.rmbk.me/errors/chat.migrated.md); [JSON](https://errorgram.rmbk.me/errors/chat.migrated.json))
+- [chat.not\_found](https://errorgram.rmbk.me/errors/chat.not_found/): The bot could not resolve this chat. ([Markdown](https://errorgram.rmbk.me/errors/chat.not_found.md); [JSON](https://errorgram.rmbk.me/errors/chat.not_found.json))
+- [file.download\_too\_large](https://errorgram.rmbk.me/errors/file.download_too_large/): The file exceeds the server’s non-local download limit. ([Markdown](https://errorgram.rmbk.me/errors/file.download_too_large.md); [JSON](https://errorgram.rmbk.me/errors/file.download_too_large.json))
+- [message.delete\_forbidden](https://errorgram.rmbk.me/errors/message.delete_forbidden/): Telegram rejected deletion of the message. ([Markdown](https://errorgram.rmbk.me/errors/message.delete_forbidden.md); [JSON](https://errorgram.rmbk.me/errors/message.delete_forbidden.json))
+- [message.not\_modified](https://errorgram.rmbk.me/errors/message.not_modified/): The requested message content and reply markup are unchanged. ([Markdown](https://errorgram.rmbk.me/errors/message.not_modified.md); [JSON](https://errorgram.rmbk.me/errors/message.not_modified.json))
+- [query.invalid\_or\_expired](https://errorgram.rmbk.me/errors/query.invalid_or_expired/): The query ID is invalid or its response window has expired. ([Markdown](https://errorgram.rmbk.me/errors/query.invalid_or_expired.md); [JSON](https://errorgram.rmbk.me/errors/query.invalid_or_expired.json))
+- [request.retry\_after](https://errorgram.rmbk.me/errors/request.retry_after/): The server asks the bot to wait before trying again. ([Markdown](https://errorgram.rmbk.me/errors/request.retry_after.md); [JSON](https://errorgram.rmbk.me/errors/request.retry_after.json))
+- [routing.token\_not\_served](https://errorgram.rmbk.me/errors/routing.token_not_served/): The token failed the server’s bot-ID or routing check. ([Markdown](https://errorgram.rmbk.me/errors/routing.token_not_served.md); [JSON](https://errorgram.rmbk.me/errors/routing.token_not_served.json))
+- [server.restarting](https://errorgram.rmbk.me/errors/server.restarting/): The bot client is closing for a server restart. ([Markdown](https://errorgram.rmbk.me/errors/server.restarting.md); [JSON](https://errorgram.rmbk.me/errors/server.restarting.json))
+- [session.logged\_out](https://errorgram.rmbk.me/errors/session.logged_out/): The bot session has logged out. ([Markdown](https://errorgram.rmbk.me/errors/session.logged_out.md); [JSON](https://errorgram.rmbk.me/errors/session.logged_out.json))
+- [updates.concurrent\_poll](https://errorgram.rmbk.me/errors/updates.concurrent_poll/): Another getUpdates request interrupted the pending long poll. ([Markdown](https://errorgram.rmbk.me/errors/updates.concurrent_poll.md); [JSON](https://errorgram.rmbk.me/errors/updates.concurrent_poll.json))
+- [updates.webhook\_active](https://errorgram.rmbk.me/errors/updates.webhook_active/): Polling was requested while a webhook is active or being configured. ([Markdown](https://errorgram.rmbk.me/errors/updates.webhook_active.md); [JSON](https://errorgram.rmbk.me/errors/updates.webhook_active.json))
+- [webhook.certificate\_too\_large](https://errorgram.rmbk.me/errors/webhook.certificate_too_large/): The uploaded webhook certificate exceeds the server’s size limit. ([Markdown](https://errorgram.rmbk.me/errors/webhook.certificate_too_large.md); [JSON](https://errorgram.rmbk.me/errors/webhook.certificate_too_large.json))

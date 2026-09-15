@@ -8,7 +8,7 @@ SNAPSHOT ?= .cache/upstream-next.json
 BASELINE ?= catalogue/upstream.json
 REPORT ?= .cache/upstream-diff.json
 
-.PHONY: help setup generate check-generated validate lint test test-python test-js check build check-packages upstream-scan upstream-diff
+.PHONY: help setup generate check-generated validate lint test test-python test-js check build check-packages upstream-scan upstream-diff docs-build docs-check docs-dev docs-browser-setup docs-browser-test
 
 help:
 	@printf '%s\n' \
@@ -17,12 +17,17 @@ help:
 	  'make check          Validate, check generation, lint, and test' \
 	  'make build          Build Python and npm distributions' \
 	  'make check-packages Test built packages in clean environments' \
+	  'make docs-dev       Preview the documentation while editing' \
+	  'make docs-check     Build and validate the documentation' \
+	  'make docs-browser-setup Install Chromium for browser tests' \
+	  'make docs-browser-test Check search and navigation in Chromium' \
 	  'make upstream-scan  Scan SOURCE at REF into SNAPSHOT' \
 	  'make upstream-diff  Compare BASELINE with SNAPSHOT'
 
 setup:
 	$(UV) sync --locked --all-extras
 	$(NPM) --prefix js ci --no-audit --no-fund
+	$(NPM) --prefix site ci --no-audit --no-fund
 
 generate:
 	$(UV) run --locked python tools/generate.py
@@ -44,7 +49,7 @@ test-js:
 
 test: test-python test-js
 
-check: validate check-generated lint test
+check: validate check-generated lint test docs-check
 
 build: check-generated
 	$(UV) build --out-dir dist
@@ -53,6 +58,21 @@ build: check-generated
 
 check-packages:
 	$(UV) run --locked python tools/smoke_packages.py
+
+docs-build: check-generated
+	$(NPM) --prefix site run build
+
+docs-check: docs-build
+	$(UV) run --locked python tools/check_site.py
+
+docs-dev: generate
+	$(NPM) --prefix site run dev
+
+docs-browser-setup:
+	cd site && $(NPM) exec -- playwright install chromium
+
+docs-browser-test: docs-build
+	$(NPM) --prefix site run test:e2e
 
 upstream-scan:
 	$(UV) run --locked python tools/upstream.py scan --source "$(SOURCE)" --ref "$(REF)" --output "$(SNAPSHOT)"

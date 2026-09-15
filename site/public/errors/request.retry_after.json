@@ -1,0 +1,80 @@
+{
+  "id": "request.retry_after",
+  "category": "backoff",
+  "summary": "The server asks the bot to wait before trying again.",
+  "match_any": [
+    {
+      "error_code": 429,
+      "required_parameters": {
+        "retry_after": "positive_integer"
+      }
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "setWebhook",
+      "close"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "Flood limiting.",
+    "Authorization or startup throttling.",
+    "An unfinished query being disposed, including during shutdown."
+  ],
+  "diagnostic_limits": "The response does not identify whether the limit is per chat, per bot, per method or caused by server lifecycle handling.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Query.cpp",
+      "lines": [
+        120,
+        126
+      ],
+      "note": "Builds both the description and structured retry_after parameter."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Query.h",
+      "lines": [
+        238,
+        242
+      ],
+      "note": "The query deleter also produces this response with a five-second delay."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        17529,
+        17550
+      ],
+      "note": "Flood and authorization paths share the response shape."
+    },
+    {
+      "source": "response-parameters",
+      "note": "Documents retry_after in seconds."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 429,
+      "description": "Too Many Requests: retry after 5",
+      "parameters": {
+        "retry_after": 5
+      }
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "schedule_bounded_retry",
+    "repeat_request": "after_server_delay_and_policy_check",
+    "delay_parameter": "retry_after",
+    "preconditions": [
+      "Wait at least the supplied delay, coordinate with any framework retry plugin, and bound attempts."
+    ]
+  }
+}

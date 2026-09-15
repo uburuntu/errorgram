@@ -4,6 +4,8 @@ One `BadRequest` can mean an unchanged message, a missing chat, or a request tha
 
 Errorgram gives Telegram Bot API errors stable IDs, useful context, and typed bindings. One JSON catalogue powers Python, JavaScript, TypeScript, aiogram, and grammY.
 
+[Read the docs](https://errorgram.rmbk.me/) · [Find an error](https://errorgram.rmbk.me/catalogue/) · [For AI agents](https://errorgram.rmbk.me/agents/)
+
 ```python
 from errorgram import classify
 
@@ -58,6 +60,19 @@ make build
 Builds produce a Python wheel, a source distribution, and an npm tarball in `dist/`. Registry publication is a separate step.
 
 See the [Python and aiogram guide](docs/python.md), [JavaScript and grammY guide](docs/javascript.md), and [catalogue](docs/catalogue.md).
+
+## Documentation
+
+The [Starlight site](https://errorgram.rmbk.me/) gives every condition a searchable page, a Markdown copy, and a JSON record. `llms.txt` and `llms-full.txt` help agents read the same reference.
+
+```sh
+make docs-dev
+make docs-check
+make docs-browser-setup
+make docs-browser-test
+```
+
+Edit guides in `site/src/content/docs/`. Condition pages and agent exports are generated with `make generate`. Passing checks on `main` publish the site to GitHub Pages; `site/public/CNAME` records the custom domain.
 
 ## Keep it current
 

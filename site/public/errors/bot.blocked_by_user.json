@@ -1,0 +1,48 @@
+{
+  "id": "bot.blocked_by_user",
+  "category": "access",
+  "summary": "The user has blocked the bot.",
+  "match_any": [
+    {
+      "error_code": 403,
+      "description_exact": "Forbidden: bot was blocked by the user"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The recipient has blocked the bot."
+  ],
+  "diagnostic_limits": "The response establishes the current rejection, not that access can never be restored.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        127,
+        129
+      ],
+      "note": "USER_IS_BLOCKED changes both the code (to 403) and the description."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 403,
+      "description": "Forbidden: bot was blocked by the user"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "suspend_sends_until_access_changes",
+    "repeat_request": "after_access_change",
+    "preconditions": [
+      "Use application policy to track reachability and resume only when there is evidence that access changed."
+    ]
+  }
+}

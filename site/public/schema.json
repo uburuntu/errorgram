@@ -1,0 +1,434 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/uburuntu/errorgram/main/catalogue/schema.json",
+  "title": "Errorgram catalogue",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "schema_version",
+    "catalogue_version",
+    "reviewed_on",
+    "coverage",
+    "sources",
+    "matching",
+    "entries"
+  ],
+  "properties": {
+    "name": {
+      "const": "Errorgram"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "catalogue_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "reviewed_on": {
+      "type": "string",
+      "format": "date"
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "complete",
+        "live_verified",
+        "scope",
+        "examples"
+      ],
+      "properties": {
+        "complete": {
+          "type": "boolean"
+        },
+        "live_verified": {
+          "type": "boolean"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        },
+        "examples": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "sources": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/source"
+      }
+    },
+    "matching": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exclusive_parameter_groups"
+      ],
+      "properties": {
+        "exclusive_parameter_groups": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "uniqueItems": true,
+            "items": {
+              "$ref": "#/$defs/fieldName"
+            }
+          }
+        }
+      }
+    },
+    "entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fieldName": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$"
+    },
+    "integer": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "predicateTypes": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/fieldName"
+      },
+      "additionalProperties": {
+        "enum": [
+          "positive_integer",
+          "nonzero_integer"
+        ]
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "server_source",
+            "official_documentation",
+            "observation"
+          ]
+        },
+        "repository": {
+          "type": "string",
+          "format": "uri"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "version_label": {
+          "$ref": "#/$defs/text"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "accessed_on": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "server_source"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "repository",
+              "revision",
+              "version_label"
+            ]
+          },
+          "else": {
+            "required": [
+              "url",
+              "accessed_on"
+            ]
+          }
+        }
+      ]
+    },
+    "rule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "error_code"
+      ],
+      "properties": {
+        "error_code": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "description_exact": {
+          "$ref": "#/$defs/text"
+        },
+        "description_template": {
+          "$ref": "#/$defs/text"
+        },
+        "capture_types": {
+          "$ref": "#/$defs/predicateTypes"
+        },
+        "method": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*$"
+        },
+        "required_parameters": {
+          "$ref": "#/$defs/predicateTypes"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "description_exact"
+          ]
+        },
+        {
+          "required": [
+            "description_template"
+          ]
+        },
+        {
+          "required": [
+            "required_parameters"
+          ]
+        }
+      ],
+      "not": {
+        "required": [
+          "description_exact",
+          "description_template"
+        ]
+      },
+      "dependentRequired": {
+        "description_template": [
+          "capture_types"
+        ],
+        "capture_types": [
+          "description_template"
+        ]
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "note"
+      ],
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/text"
+        },
+        "note": {
+          "$ref": "#/$defs/text"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lines": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "dependentRequired": {
+        "path": [
+          "lines"
+        ],
+        "lines": [
+          "path"
+        ]
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "category",
+        "summary",
+        "match_any",
+        "scope",
+        "possible_causes",
+        "diagnostic_limits",
+        "guidance",
+        "evidence",
+        "example",
+        "evidence_level"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+        },
+        "category": {
+          "$ref": "#/$defs/fieldName"
+        },
+        "summary": {
+          "$ref": "#/$defs/text"
+        },
+        "match_any": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/rule"
+          }
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "method_examples",
+            "exhaustive"
+          ],
+          "properties": {
+            "method_examples": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[a-zA-Z][a-zA-Z0-9]*$"
+              }
+            },
+            "exhaustive": {
+              "type": "boolean"
+            },
+            "deployment": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "possible_causes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "diagnostic_limits": {
+          "$ref": "#/$defs/text"
+        },
+        "guidance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "action",
+            "repeat_request",
+            "preconditions"
+          ],
+          "properties": {
+            "action": {
+              "$ref": "#/$defs/fieldName"
+            },
+            "repeat_request": {
+              "$ref": "#/$defs/fieldName"
+            },
+            "delay_parameter": {
+              "$ref": "#/$defs/fieldName"
+            },
+            "preconditions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/text"
+              }
+            }
+          }
+        },
+        "facts": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "string",
+              "integer",
+              "boolean"
+            ]
+          }
+        },
+        "evidence_level": {
+          "enum": [
+            "source_derived",
+            "documented",
+            "observed"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/evidence"
+          }
+        },
+        "example": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "response"
+          ],
+          "properties": {
+            "method": {
+              "type": "string"
+            },
+            "response": {
+              "type": "object",
+              "required": [
+                "ok",
+                "error_code",
+                "description"
+              ],
+              "properties": {
+                "ok": {
+                  "const": false
+                },
+                "error_code": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                "description": {
+                  "type": "string"
+                },
+                "parameters": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

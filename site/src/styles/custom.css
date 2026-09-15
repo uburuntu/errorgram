@@ -1,0 +1,114 @@
+:root {
+  --sl-font: "Inter", "Avenir Next", Avenir, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --sl-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --sl-color-accent-low: #123c36;
+  --sl-color-accent: #20aa92;
+  --sl-color-accent-high: #b4efdc;
+  --sl-color-white: #f0f4f2;
+  --sl-color-gray-1: #dfe7e3;
+  --sl-color-gray-2: #b7c3bd;
+  --sl-color-gray-3: #7b8d84;
+  --sl-color-gray-4: #48594f;
+  --sl-color-gray-5: #293a31;
+  --sl-color-gray-6: #1b2821;
+  --sl-color-black: #131b17;
+  --sl-content-width: 49rem;
+  --sl-text-h1: clamp(2rem, 3.2vw, 2.65rem);
+  --sl-text-h2: 1.5rem;
+  --sl-text-h3: 1.125rem;
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: #e1f3ed;
+  --sl-color-accent: #087467;
+  --sl-color-accent-high: #075547;
+  --sl-color-white: #1c2923;
+  --sl-color-gray-1: #33443b;
+  --sl-color-gray-2: #4a5e53;
+  --sl-color-gray-3: #667c6e;
+  --sl-color-gray-4: #94a69b;
+  --sl-color-gray-5: #d9e2dc;
+  --sl-color-gray-6: #f0f4f0;
+  --sl-color-gray-7: #f7f9f6;
+  --sl-color-black: #fffefa;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+.site-title {
+  gap: 0.65rem;
+  letter-spacing: -0.04em;
+  font-weight: 750;
+}
+
+.site-title img {
+  width: 2rem;
+  height: 2rem;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+h1 {
+  line-height: 1.14;
+  overflow-wrap: anywhere;
+}
+
+.sl-markdown-content {
+  line-height: 1.75;
+}
+
+.sl-markdown-content > p:first-child {
+  color: var(--sl-color-gray-2);
+  font-size: 1.125rem;
+}
+
+.sl-markdown-content a:not(.sl-anchor-link) {
+  text-underline-offset: 0.2em;
+}
+
+.sl-markdown-content :is(th, td) {
+  padding: 0.75rem 0.9rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+.sl-markdown-content th {
+  background: var(--sl-color-gray-6);
+  color: var(--sl-color-white);
+  font-weight: 650;
+}
+
+.sl-markdown-content :not(pre) > code {
+  border-radius: 0.25rem;
+  font-size: 0.85em;
+}
+
+.sl-markdown-content blockquote {
+  border-inline-start-color: var(--sl-color-accent);
+  padding: 0.8rem 1.15rem;
+  background: var(--sl-color-accent-low);
+  color: var(--sl-color-white);
+  border-radius: 0 0.4rem 0.4rem 0;
+}
+
+.sidebar-content {
+  font-size: 0.875rem;
+}
+
+.pagination-links a {
+  border-radius: 0.55rem;
+  box-shadow: none;
+}
+
+@media (min-width: 72rem) {
+  .content-panel {
+    padding-inline: 3rem;
+  }
+}

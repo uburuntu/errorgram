@@ -11,3 +11,6 @@ dist/
 .coverage
 *.egg-info/
 .DS_Store
+.astro/
+playwright-report/
+test-results/

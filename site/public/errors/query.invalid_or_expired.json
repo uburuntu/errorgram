@@ -1,0 +1,49 @@
+{
+  "id": "query.invalid_or_expired",
+  "category": "query_state",
+  "summary": "The query ID is invalid or its response window has expired.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: query is too old and response timeout expired or query ID is invalid"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "answerCallbackQuery"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The query identifier is invalid.",
+    "The response arrived after the query's response window."
+  ],
+  "diagnostic_limits": "The description explicitly combines causes; it does not establish a universal timeout duration.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        148,
+        150
+      ],
+      "note": "QUERY_ID_INVALID is deliberately expanded to a description containing alternatives."
+    }
+  ],
+  "example": {
+    "method": "answerCallbackQuery",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: query is too old and response timeout expired or query ID is invalid"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "verify_identifier_and_response_timing",
+    "repeat_request": "unhelpful_for_expired_identifier",
+    "preconditions": [
+      "Use the identifier from the correct incoming query and respond promptly to future queries."
+    ]
+  }
+}

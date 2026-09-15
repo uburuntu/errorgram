@@ -1,0 +1,50 @@
+{
+  "id": "routing.token_not_served",
+  "category": "token_routing",
+  "summary": "The token failed the server’s bot-ID or routing check.",
+  "match_any": [
+    {
+      "error_code": 421,
+      "description_exact": "Misdirected Request: forbidden token specified"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "getMe"
+    ],
+    "exhaustive": false,
+    "deployment": "Relevant to the open-source server's token-range routing; hosted occurrence is unverified."
+  },
+  "possible_causes": [
+    "The bot ID is outside the server’s configured token range.",
+    "The token’s numeric prefix could not be parsed."
+  ],
+  "diagnostic_limits": "The same response covers a routing failure and a token-format failure; it does not prove that Telegram revoked the token.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/ClientManager.cpp",
+      "lines": [
+        78,
+        80
+      ],
+      "note": "Both sides of the condition emit the same 421 response."
+    }
+  ],
+  "example": {
+    "method": "getMe",
+    "response": {
+      "ok": false,
+      "error_code": 421,
+      "description": "Misdirected Request: forbidden token specified"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "inspect_token_prefix_and_server_routing",
+    "repeat_request": "after_configuration_change",
+    "preconditions": [
+      "Check token formatting and, when operating a local server, its token-range configuration."
+    ]
+  }
+}

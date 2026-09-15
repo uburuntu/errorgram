@@ -1,0 +1,72 @@
+{
+  "id": "file.download_too_large",
+  "category": "download_limit",
+  "summary": "The file exceeds the server’s non-local download limit.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "method": "getfile",
+      "description_exact": "Bad Request: file is too big"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "getFile"
+    ],
+    "exhaustive": false,
+    "deployment": "Source guard applies when local_mode is false."
+  },
+  "possible_causes": [
+    "Expected or downloaded file size exceeds MAX_DOWNLOAD_FILE_SIZE while local mode is disabled."
+  ],
+  "diagnostic_limits": "A bare file-is-too-big description without method context is insufficient for this download-specific classification. This is not an upload-size rule.",
+  "facts": {
+    "verified_limit_bytes": 20971520,
+    "limit_version_source": "server-10.3"
+  },
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        17032,
+        17049
+      ],
+      "note": "getFile reaches the size check guarded by local_mode."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        9373,
+        9383
+      ],
+      "note": "The download update path enforces the same limit."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.h",
+      "lines": [
+        72,
+        72
+      ],
+      "note": "The constant is 20 << 20 bytes in this revision."
+    }
+  ],
+  "example": {
+    "method": "getFile",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: file is too big"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "change_download_strategy",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Use a suitable smaller file or deliberately configure a server with the required local-mode download capability."
+    ]
+  }
+}

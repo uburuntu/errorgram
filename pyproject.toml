@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling==1.32.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "errorgram"
+version = "0.1.0"
+description = "Understand Telegram Bot API errors."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+keywords = ["telegram", "errors", "aiogram", "bot-api"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/uburuntu/errorgram"
+Source = "https://github.com/uburuntu/errorgram"
+Issues = "https://github.com/uburuntu/errorgram/issues"
+
+[project.optional-dependencies]
+aiogram = ["aiogram>=3.31.0,<4"]
+
+[dependency-groups]
+dev = [
+    "aiogram==3.31.0",
+    "jsonschema==4.26.0",
+    "pytest==9.1.1",
+    "ruff==0.16.7",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["python/errorgram"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/python", "tests/tooling"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"python/errorgram/_generated*.py" = ["E501"]

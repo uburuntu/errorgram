@@ -1,0 +1,816 @@
+{
+  "format_version": 1,
+  "provenance": "Synthetic cases derived from the catalogue and matching contract.",
+  "cases": [
+    {
+      "name": "message.not_modified",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message"
+      },
+      "method": "editMessageText",
+      "expected": {
+        "status": "matched",
+        "id": "message.not_modified",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.delete_forbidden",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message can't be deleted"
+      },
+      "method": "deleteMessage",
+      "expected": {
+        "status": "matched",
+        "id": "message.delete_forbidden",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "query.invalid_or_expired",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: query is too old and response timeout expired or query ID is invalid"
+      },
+      "method": "answerCallbackQuery",
+      "expected": {
+        "status": "matched",
+        "id": "query.invalid_or_expired",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "chat.not_found",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: chat not found"
+      },
+      "method": "getChat",
+      "expected": {
+        "status": "matched",
+        "id": "chat.not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "chat.migrated",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: group chat was upgraded to a supergroup chat",
+        "parameters": {
+          "migrate_to_chat_id": -1001234567890
+        }
+      },
+      "method": "sendMessage",
+      "expected": {
+        "status": "matched",
+        "id": "chat.migrated",
+        "facts": {
+          "migrate_to_chat_id": -1001234567890
+        },
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.blocked_by_user",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot was blocked by the user"
+      },
+      "method": "sendMessage",
+      "expected": {
+        "status": "matched",
+        "id": "bot.blocked_by_user",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "request.retry_after",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Too Many Requests: retry after 5",
+        "parameters": {
+          "retry_after": 5
+        }
+      },
+      "method": "sendMessage",
+      "expected": {
+        "status": "matched",
+        "id": "request.retry_after",
+        "facts": {
+          "retry_after": 5
+        },
+        "candidates": []
+      }
+    },
+    {
+      "name": "updates.webhook_active",
+      "response": {
+        "ok": false,
+        "error_code": 409,
+        "description": "Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first"
+      },
+      "method": "getUpdates",
+      "expected": {
+        "status": "matched",
+        "id": "updates.webhook_active",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "updates.concurrent_poll",
+      "response": {
+        "ok": false,
+        "error_code": 409,
+        "description": "Conflict: terminated by other getUpdates request; make sure that only one bot instance is running"
+      },
+      "method": "getUpdates",
+      "expected": {
+        "status": "matched",
+        "id": "updates.concurrent_poll",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "auth.invalid_token_format",
+      "response": {
+        "ok": false,
+        "error_code": 401,
+        "description": "Unauthorized: invalid token specified"
+      },
+      "method": "getMe",
+      "expected": {
+        "status": "matched",
+        "id": "auth.invalid_token_format",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.download_too_large",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: file is too big"
+      },
+      "method": "getFile",
+      "expected": {
+        "status": "matched",
+        "id": "file.download_too_large",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "server.restarting",
+      "response": {
+        "ok": false,
+        "error_code": 500,
+        "description": "Internal Server Error: restart"
+      },
+      "method": "getMe",
+      "expected": {
+        "status": "matched",
+        "id": "server.restarting",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "routing.token_not_served",
+      "response": {
+        "ok": false,
+        "error_code": 421,
+        "description": "Misdirected Request: forbidden token specified"
+      },
+      "method": "getMe",
+      "expected": {
+        "status": "matched",
+        "id": "routing.token_not_served",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "session.logged_out",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Logged out"
+      },
+      "method": "getMe",
+      "expected": {
+        "status": "matched",
+        "id": "session.logged_out",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "webhook.certificate_too_large",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: certificate size is too big (4194304 bytes)"
+      },
+      "method": "setWebhook",
+      "expected": {
+        "status": "matched",
+        "id": "webhook.certificate_too_large",
+        "facts": {
+          "size_bytes": 4194304
+        },
+        "candidates": []
+      }
+    },
+    {
+      "name": "unknown description",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: a future error"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "unknown code",
+      "response": {
+        "ok": false,
+        "error_code": 499,
+        "description": "A future response"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "exact descriptions keep case",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad request: chat not found"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "nested descriptions do not match a leaf",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: wrapper: Bad Request: chat not found"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "wrong code does not match text",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: chat not found"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "download requires method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: file is too big"
+      },
+      "expected": {
+        "status": "insufficient_context",
+        "facts": {},
+        "candidates": [
+          "file.download_too_large"
+        ]
+      }
+    },
+    {
+      "name": "download condition excludes uploads",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: file is too big"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      },
+      "method": "sendDocument"
+    },
+    {
+      "name": "method names ignore ASCII case",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: file is too big"
+      },
+      "expected": {
+        "status": "matched",
+        "facts": {},
+        "candidates": [],
+        "id": "file.download_too_large"
+      },
+      "method": "GETFILE"
+    },
+    {
+      "name": "retry parameter survives description changes",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Please wait",
+        "parameters": {
+          "retry_after": 7
+        }
+      },
+      "expected": {
+        "status": "matched",
+        "facts": {
+          "retry_after": 7
+        },
+        "candidates": [],
+        "id": "request.retry_after"
+      }
+    },
+    {
+      "name": "migration parameter survives description changes",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "The target moved",
+        "parameters": {
+          "migrate_to_chat_id": -1001234567890
+        }
+      },
+      "expected": {
+        "status": "matched",
+        "facts": {
+          "migrate_to_chat_id": -1001234567890
+        },
+        "candidates": [],
+        "id": "chat.migrated"
+      }
+    },
+    {
+      "name": "retry needs a parameter",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Too Many Requests: retry after 5"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid retry string",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Too Many Requests: retry after 5",
+        "parameters": {
+          "retry_after": "5"
+        }
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid retry boolean",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Too Many Requests: retry after 5",
+        "parameters": {
+          "retry_after": true
+        }
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid retry zero",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Too Many Requests: retry after 5",
+        "parameters": {
+          "retry_after": 0
+        }
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid retry negative",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Too Many Requests: retry after 5",
+        "parameters": {
+          "retry_after": -2
+        }
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid retry fraction",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Too Many Requests: retry after 5",
+        "parameters": {
+          "retry_after": 1.5
+        }
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid retry unsafe integer",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Too Many Requests: retry after 5",
+        "parameters": {
+          "retry_after": 9007199254740992
+        }
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid retry null",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Too Many Requests: retry after 5",
+        "parameters": {
+          "retry_after": null
+        }
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "integral JSON numbers agree across languages",
+      "response": {
+        "ok": false,
+        "error_code": 429,
+        "description": "Please wait",
+        "parameters": {
+          "retry_after": 5.0
+        }
+      },
+      "expected": {
+        "status": "matched",
+        "facts": {
+          "retry_after": 5
+        },
+        "candidates": [],
+        "id": "request.retry_after"
+      }
+    },
+    {
+      "name": "zero migration ID is invalid",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "The target moved",
+        "parameters": {
+          "migrate_to_chat_id": 0
+        }
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "conflicting recovery parameters",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Conflicting parameters",
+        "parameters": {
+          "retry_after": 5,
+          "migrate_to_chat_id": -1001234567890
+        }
+      },
+      "expected": {
+        "status": "ambiguous",
+        "facts": {},
+        "candidates": [
+          "chat.migrated",
+          "request.retry_after"
+        ]
+      }
+    },
+    {
+      "name": "incompatible recovery signal prevents text fallback",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: chat not found",
+        "parameters": {
+          "retry_after": 5
+        }
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid recovery signal prevents text fallback",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: chat not found",
+        "parameters": {
+          "retry_after": "5"
+        }
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "unknown parameters remain forward compatible",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: chat not found",
+        "parameters": {
+          "new_parameter": {
+            "value": 1
+          }
+        }
+      },
+      "expected": {
+        "status": "matched",
+        "facts": {},
+        "candidates": [],
+        "id": "chat.not_found"
+      }
+    },
+    {
+      "name": "template literal punctuation is exact",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: certificate size is too big [4194304 bytes]"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "template rejects zero-sized positive capture",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: certificate size is too big (0 bytes)"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "template rejects unsafe integer capture",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: certificate size is too big (9007199254740992 bytes)"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: success",
+      "response": {
+        "ok": true,
+        "result": {}
+      },
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: null",
+      "response": null,
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: array",
+      "response": [],
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: string",
+      "response": "Error",
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: missing ok",
+      "response": {
+        "error_code": 400,
+        "description": "Bad Request: chat not found"
+      },
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: nonboolean ok",
+      "response": {
+        "ok": 0,
+        "error_code": 400,
+        "description": "Bad Request: chat not found"
+      },
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: boolean code",
+      "response": {
+        "ok": false,
+        "error_code": true,
+        "description": "Error"
+      },
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: string code",
+      "response": {
+        "ok": false,
+        "error_code": "400",
+        "description": "Error"
+      },
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: fractional code",
+      "response": {
+        "ok": false,
+        "error_code": 400.5,
+        "description": "Error"
+      },
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: unsafe code",
+      "response": {
+        "ok": false,
+        "error_code": 9007199254740992,
+        "description": "Error"
+      },
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: missing description",
+      "response": {
+        "ok": false,
+        "error_code": 400
+      },
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: null parameters",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Error",
+        "parameters": null
+      },
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "invalid envelope: array parameters",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Error",
+        "parameters": []
+      },
+      "expected": {
+        "status": "not_api_error",
+        "facts": {},
+        "candidates": []
+      }
+    }
+  ]
+}

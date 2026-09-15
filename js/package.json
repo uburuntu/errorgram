@@ -1,0 +1,57 @@
+{
+  "name": "errorgram",
+  "version": "0.1.0",
+  "description": "Understand Telegram Bot API errors with stable IDs and clear diagnostics.",
+  "license": "MIT",
+  "homepage": "https://github.com/uburuntu/errorgram#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uburuntu/errorgram.git",
+    "directory": "js"
+  },
+  "bugs": { "url": "https://github.com/uburuntu/errorgram/issues" },
+  "packageManager": "npm@12.0.2",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./grammy": {
+      "types": "./dist/grammy.d.ts",
+      "default": "./dist/grammy.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test:js": "node --test test/*.test.js",
+    "test:types": "tsc -p test/tsconfig.json",
+    "test": "npm run build && npm run test:js && npm run test:types",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "26.5.1",
+    "@types/node-fetch": "2.6.13",
+    "grammy": "1.46.0",
+    "typescript": "7.0.2"
+  },
+  "peerDependencies": {
+    "grammy": "^1.46.0"
+  },
+  "peerDependenciesMeta": {
+    "grammy": {
+      "optional": true
+    }
+  }
+}

@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "check": "tsc --noEmit",
+    "check": "astro sync && tsc --noEmit",
     "build": "astro build",
     "preview": "astro preview",
     "test:e2e": "playwright test"

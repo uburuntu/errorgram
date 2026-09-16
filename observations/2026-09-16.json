@@ -1,0 +1,138 @@
+{
+  "format_version": 1,
+  "deployment": {
+    "host": "api.telegram.org",
+    "api_version": "unknown"
+  },
+  "sanitization": {
+    "success_bodies": "omitted",
+    "descriptions": "URLs, credentials and known values redacted; limited to 4096 characters",
+    "migration_target": "replaced with a synthetic identifier",
+    "parameters": "only migrate_to_chat_id and retry_after retained"
+  },
+  "started_at": "2026-09-16T09:52:42Z",
+  "message_tests": true,
+  "status": "passed",
+  "checks": [
+    {
+      "method": "getMe",
+      "time": "2026-09-16T09:52:42Z",
+      "http_status": 200,
+      "expected_id": null,
+      "matched_id": null,
+      "status": "passed"
+    },
+    {
+      "method": "getChatAdministrators",
+      "time": "2026-09-16T09:52:42Z",
+      "http_status": 400,
+      "expected_id": "chat.migrated",
+      "matched_id": "chat.migrated",
+      "status": "passed",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: group chat was upgraded to a supergroup chat",
+        "parameters": {
+          "migrate_to_chat_id": -1001234567890
+        }
+      }
+    },
+    {
+      "method": "getFile",
+      "time": "2026-09-16T09:52:58Z",
+      "http_status": 400,
+      "expected_id": "file.id_missing",
+      "matched_id": "file.id_missing",
+      "status": "passed",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: file_id not specified"
+      }
+    },
+    {
+      "method": "sendMessage",
+      "time": "2026-09-16T09:52:58Z",
+      "http_status": 400,
+      "expected_id": "text.empty",
+      "matched_id": "text.empty",
+      "status": "passed",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message text is empty"
+      }
+    },
+    {
+      "method": "sendMessage",
+      "time": "2026-09-16T09:52:58Z",
+      "http_status": 400,
+      "expected_id": "format.parse_mode_unsupported",
+      "matched_id": "format.parse_mode_unsupported",
+      "status": "passed",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: unsupported parse_mode"
+      }
+    },
+    {
+      "method": "sendMessage",
+      "time": "2026-09-16T09:52:58Z",
+      "http_status": 200,
+      "expected_id": null,
+      "matched_id": null,
+      "status": "passed"
+    },
+    {
+      "method": "editMessageText",
+      "time": "2026-09-16T09:52:58Z",
+      "http_status": 400,
+      "expected_id": "message.not_modified",
+      "matched_id": "message.not_modified",
+      "status": "passed",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message"
+      }
+    },
+    {
+      "method": "deleteMessage",
+      "time": "2026-09-16T09:52:58Z",
+      "http_status": 200,
+      "expected_id": null,
+      "matched_id": null,
+      "status": "passed"
+    },
+    {
+      "method": "editMessageText",
+      "time": "2026-09-16T09:52:58Z",
+      "http_status": 400,
+      "expected_id": "message.edit_not_found",
+      "matched_id": "message.edit_not_found",
+      "status": "passed",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to edit not found"
+      }
+    },
+    {
+      "method": "deleteMessage",
+      "time": "2026-09-16T09:52:59Z",
+      "http_status": 400,
+      "expected_id": "message.delete_not_found",
+      "matched_id": "message.delete_not_found",
+      "status": "passed",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to delete not found"
+      }
+    }
+  ],
+  "cleanup": "succeeded",
+  "finished_at": "2026-09-16T09:52:59Z"
+}

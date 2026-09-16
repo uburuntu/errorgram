@@ -1,0 +1,58 @@
+name: Live checks
+
+on:
+  workflow_dispatch:
+    inputs:
+      allow_message_tests:
+        description: Create and delete one silent message in the test chat
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-telegram-checks
+  cancel-in-progress: false
+
+jobs:
+  live:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4 # v10.1.0
+        with:
+          version: "0.12.15"
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Run live checks
+        env:
+          TELEGRAM_TEST_BOT_TOKEN: ${{ secrets.TELEGRAM_TEST_BOT_TOKEN }}
+          TELEGRAM_TEST_CHAT_ID: ${{ secrets.TELEGRAM_TEST_CHAT_ID }}
+          TELEGRAM_MIGRATED_CHAT_ID: ${{ secrets.TELEGRAM_MIGRATED_CHAT_ID }}
+          ALLOW_MESSAGE_TESTS: ${{ inputs.allow_message_tests }}
+        shell: bash
+        run: |
+          args=(--output .cache/live/observations.json)
+          if [[ "$ALLOW_MESSAGE_TESTS" == "true" ]]; then
+            args+=(--allow-message-tests)
+          fi
+          uv run python -m tools.live_checks "${args[@]}"
+
+      - name: Upload sanitized observations
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: live-observations
+          path: .cache/live/observations.json
+          include-hidden-files: true
+          if-no-files-found: ignore

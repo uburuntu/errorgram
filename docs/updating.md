@@ -4,6 +4,17 @@ Telegram adds methods, rewrites messages and changes how errors reach the Bot AP
 Errorgram tracks those changes against a pinned source revision. The survey opens
 a review queue; it never changes the catalogue or recommends a recovery action.
 
+## Monthly review
+
+[Review upstream changes](https://github.com/uburuntu/errorgram/actions/workflows/upstream.yml)
+runs on the first day of each month at 06:17 UTC. It fetches the official server's
+default branch and compares that commit with the saved baseline. Each run provides
+a summary and a downloadable report retained for 90 days. You can also run it manually.
+
+The workflow never edits the catalogue or accepts a new baseline. GitHub can disable
+scheduled workflows after 60 days without repository activity; re-enable the workflow
+from its Actions page if needed.
+
 ## Scan a revision
 
 Use a local clone of the [official server](https://github.com/tdlib/telegram-bot-api).

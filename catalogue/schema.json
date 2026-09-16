@@ -16,7 +16,7 @@
       "required": ["complete", "live_verified", "scope", "examples"],
       "properties": {
         "complete": {"type": "boolean"},
-        "live_verified": {"type": "boolean"},
+        "live_verified": {"type": "boolean", "description": "True only when live verification covers the whole catalogue; selected observations are recorded per entry."},
         "scope": {"$ref": "#/$defs/text"},
         "examples": {"$ref": "#/$defs/text"}
       }

@@ -1,0 +1,68 @@
+{
+  "id": "user.deactivated",
+  "category": "access",
+  "summary": "Telegram rejected the operation because the user is deactivated.",
+  "match_any": [
+    {
+      "error_code": 403,
+      "description_exact": "Forbidden: user is deactivated"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "editMessageText"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The target private-chat user is marked deleted.",
+    "Telegram reported that the target account is deactivated."
+  ],
+  "diagnostic_limits": "The response establishes the current rejection; it does not expose account history or a replacement recipient.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        8803,
+        8807
+      ],
+      "note": "Edit or write access to a deleted private-chat user is rejected directly with code 403."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        124,
+        126
+      ],
+      "note": "INPUT_USER_DEACTIVATED also maps to this exact 403 response."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 403,
+      "description": "Forbidden: user is deactivated"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "suspend_operations_for_recipient",
+    "repeat_request": "after_access_change",
+    "preconditions": [
+      "Stop repeating this operation for the recipient unless there is evidence that the target or its availability changed."
+    ]
+  }
+}

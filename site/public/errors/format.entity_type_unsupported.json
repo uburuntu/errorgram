@@ -1,0 +1,77 @@
+{
+  "id": "format.entity_type_unsupported",
+  "category": "formatting",
+  "summary": "A message entity specifies an unsupported type.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: can't parse MessageEntity: Unsupported type specified"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "editMessageText",
+      "sendPhoto"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "An entity object uses a type that the server’s entity parser does not support."
+  ],
+  "diagnostic_limits": "The response does not identify the offending array item or establish whether its other fields are valid.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        11929,
+        11946
+      ],
+      "note": "Unrecognized entity types return this literal, which propagates through get_text_entity."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        11984,
+        11989
+      ],
+      "note": "The formatting helper wraps the item error with an explicit 400 code and preserves its initial capital."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13800,
+        13803
+      ],
+      "note": "Method validation errors are passed to the response normalizer."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: can't parse MessageEntity: Unsupported type specified"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "correct_entity_type",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Use a supported MessageEntity type and include its required fields."
+    ]
+  }
+}

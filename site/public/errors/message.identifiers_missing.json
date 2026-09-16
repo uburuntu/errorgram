@@ -1,0 +1,77 @@
+{
+  "id": "message.identifiers_missing",
+  "category": "request_validation",
+  "summary": "The request did not specify the list of message identifiers.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: message identifiers are not specified"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "deleteMessages",
+      "forwardMessages",
+      "copyMessages"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The message_ids argument is absent or empty."
+  ],
+  "diagnostic_limits": "An empty argument and an encoded empty JSON array are different inputs; this response covers the former.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13500,
+        13504
+      ],
+      "note": "The list parser rejects an absent or empty argument before JSON decoding."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        15000,
+        15003
+      ],
+      "note": "deleteMessages passes message_ids to this parser."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13800,
+        13803
+      ],
+      "note": "Method validation errors are passed to the response normalizer."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "deleteMessages",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: message identifiers are not specified"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "supply_message_identifiers",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Provide a JSON array of the intended message identifiers and check the method-specific count limit."
+    ]
+  }
+}

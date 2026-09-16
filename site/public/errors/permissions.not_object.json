@@ -1,0 +1,67 @@
+{
+  "id": "permissions.not_object",
+  "category": "request_validation",
+  "summary": "The permissions value is not a JSON object.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: object expected as permissions"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "setChatPermissions",
+      "restrictChatMember"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The permissions argument decoded to an array, scalar, or null instead of an object."
+  ],
+  "diagnostic_limits": "This validates only the top-level shape, not individual rights or the bot’s authority to change them.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        12564,
+        12566
+      ],
+      "note": "Decoded permissions must have object type."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13800,
+        13803
+      ],
+      "note": "Method validation errors are passed to the response normalizer."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "setChatPermissions",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: object expected as permissions"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "correct_permissions_shape",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Provide a ChatPermissions object with the intended rights, then check the operation’s access requirements."
+    ]
+  }
+}

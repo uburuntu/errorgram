@@ -22,9 +22,13 @@ export default defineConfig({
         baseUrl: "https://github.com/uburuntu/errorgram/edit/main/site/",
       },
       customCss: ["./src/styles/custom.css"],
+      components: {
+        MarkdownContent: "./src/components/MarkdownContent.astro",
+      },
       sidebar: [
         { label: "Overview", slug: "" },
         { label: "Get started", slug: "getting-started" },
+        { label: "Try a response", slug: "playground" },
         {
           label: "Use Errorgram",
           items: [

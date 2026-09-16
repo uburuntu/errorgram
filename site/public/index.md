@@ -17,7 +17,7 @@ Search by Telegram's response text, a condition ID, or a framework exception nam
 | `Too Many Requests: retry after…` | [request.retry_after](https://errorgram.rmbk.me/errors/request.retry_after/) |
 | `Forbidden: bot was blocked by the user` | [bot.blocked_by_user](https://errorgram.rmbk.me/errors/bot.blocked_by_user/) |
 
-[Browse every condition →](https://errorgram.rmbk.me/catalogue/)
+[Try your response in the playground →](https://errorgram.rmbk.me/playground/) · [Browse every condition →](https://errorgram.rmbk.me/catalogue/)
 
 ## Give your handler something precise
 
@@ -44,7 +44,7 @@ The same IDs work across languages, logs, metrics, and documentation. Your appli
 
 ## Know what the evidence supports
 
-The first catalogue covers **15 conditions** from Bot API **10.3**. Examples are synthetic and derived from pinned server source; they have not been verified against the hosted API. Coverage will grow through reviewed contributions.
+The catalogue tracks Bot API **10.3**. Seven conditions also have recorded live observations. Examples use synthetic data; each record links to its evidence. Coverage is incomplete and grows through reviewed contributions.
 
 A stable ID describes the observed condition. It cannot prove every underlying cause. Unknown responses stay unknown, and transport failures and framework validation errors remain outside the catalogue.
 

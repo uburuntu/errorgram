@@ -43,7 +43,8 @@
           "type": "boolean"
         },
         "live_verified": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "True only when live verification covers the whole catalogue; selected observations are recorded per entry."
         },
         "scope": {
           "$ref": "#/$defs/text"

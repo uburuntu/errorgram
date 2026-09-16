@@ -1,0 +1,49 @@
+{
+  "id": "chat.group_deleted",
+  "category": "access",
+  "summary": "Telegram reports that the group chat was deleted.",
+  "match_any": [
+    {
+      "error_code": 403,
+      "description_exact": "Forbidden: the group chat was deleted"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "getChatAdministrators"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The basic group is inactive and has no recorded supergroup replacement in this access check."
+  ],
+  "diagnostic_limits": "This signature is distinct from group migration and does not supply a replacement chat identifier.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        8814,
+        8829
+      ],
+      "note": "The inactive-group branch distinguishes a recorded migration from the deleted-group response."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 403,
+      "description": "Forbidden: the group chat was deleted"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "retire_or_review_chat_target",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Review the stored target and stop repeated sends; use a replacement only when it is independently established."
+    ]
+  }
+}

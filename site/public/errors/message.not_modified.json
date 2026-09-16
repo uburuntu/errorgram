@@ -22,6 +22,10 @@
   "diagnostic_limits": "The response does not include the current message or establish the history of concurrent edits.",
   "evidence": [
     {
+      "source": "live-2026-09-16",
+      "note": "Editing a newly created bot message with identical text returned this description. The test message was then deleted."
+    },
+    {
       "source": "server-10.3",
       "path": "telegram-bot-api/Client.cpp",
       "lines": [
@@ -39,7 +43,7 @@
       "description": "Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message"
     }
   },
-  "evidence_level": "source_derived",
+  "evidence_level": "observed",
   "guidance": {
     "action": "accept_existing_state_if_intended",
     "repeat_request": "unhelpful_without_change",

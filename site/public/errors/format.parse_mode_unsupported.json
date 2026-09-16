@@ -1,0 +1,72 @@
+{
+  "id": "format.parse_mode_unsupported",
+  "category": "formatting",
+  "summary": "The requested parse_mode is unsupported.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: unsupported parse_mode"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "editMessageText",
+      "sendPhoto"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "Nonempty text was supplied with a parse_mode that the server does not recognize."
+  ],
+  "diagnostic_limits": "The server lowercases parse_mode before checking it. This response does not identify a malformed entity inside a supported mode.",
+  "evidence": [
+    {
+      "source": "live-2026-09-16",
+      "note": "sendMessage with an unsupported parse_mode returned this description."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        11961,
+        11977
+      ],
+      "note": "Nonempty text accepts markdown, markdownv2, html, or the no-parsing path; other modes fail."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13800,
+        13803
+      ],
+      "note": "Method validation errors are passed to the response normalizer."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: unsupported parse_mode"
+    }
+  },
+  "evidence_level": "observed",
+  "guidance": {
+    "action": "correct_parse_mode",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Choose a supported parse_mode, or omit it and use plain text or explicit entities."
+    ]
+  }
+}

@@ -16,6 +16,7 @@ SITE = "https://errorgram.rmbk.me"
 GUIDES = (
     "index",
     "getting-started",
+    "playground",
     "python",
     "javascript",
     "matching",

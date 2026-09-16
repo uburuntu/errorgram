@@ -1,0 +1,76 @@
+{
+  "id": "bot.not_member",
+  "category": "access",
+  "summary": "The bot lacks the chat membership required for this operation.",
+  "match_any": [
+    {
+      "error_code": 403,
+      "description_exact": "Forbidden: bot is not a member of the group chat"
+    },
+    {
+      "error_code": 403,
+      "description_exact": "Forbidden: bot is not a member of the supergroup chat"
+    },
+    {
+      "error_code": 403,
+      "description_exact": "Forbidden: bot is not a member of the channel chat"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "deleteMessage"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The bot has left an active group.",
+    "The bot is not a member of a supergroup or channel and the requested access requires membership."
+  ],
+  "diagnostic_limits": "Membership requirements depend on the chat type, public access, and operation. This is separate from the explicit kicked response.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        8835,
+        8836
+      ],
+      "note": "An active group with a departed bot fails edit or write access."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        8850,
+        8856
+      ],
+      "note": "Public visibility and requested access determine whether supergroup or channel membership is required."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        9045,
+        9055
+      ],
+      "note": "Banned, left, and restricted nonmember statuses do not count as membership."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 403,
+      "description": "Forbidden: bot is not a member of the group chat"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "restore_bot_membership",
+    "repeat_request": "after_access_change",
+    "preconditions": [
+      "Add or rejoin the bot with the required access through an authorized chat administrator before resuming."
+    ]
+  }
+}

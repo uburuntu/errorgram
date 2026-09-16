@@ -811,6 +811,1832 @@
         "facts": {},
         "candidates": []
       }
+    },
+    {
+      "name": "message.edit_not_found",
+      "method": "editMessageText",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to edit not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.edit_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.edit_not_found wrong code",
+      "method": "editMessageText",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: message to edit not found"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.edit_not_found without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to edit not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.edit_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "editMessageText",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to edit was not found"
+      },
+      "name": "message.edit_not_found nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.delete_not_found",
+      "method": "deleteMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to delete not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.delete_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.delete_not_found wrong code",
+      "method": "deleteMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: message to delete not found"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.delete_not_found without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to delete not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.delete_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "deleteMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to delete was not found"
+      },
+      "name": "message.delete_not_found nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.forward_not_found",
+      "method": "forwardMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to forward not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.forward_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.forward_not_found wrong code",
+      "method": "forwardMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: message to forward not found"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.forward_not_found without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to forward not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.forward_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "forwardMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to forward was not found"
+      },
+      "name": "message.forward_not_found nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.copy_not_found",
+      "method": "copyMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to copy not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.copy_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.copy_not_found wrong code",
+      "method": "copyMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: message to copy not found"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.copy_not_found without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to copy not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.copy_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "copyMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to copy was not found"
+      },
+      "name": "message.copy_not_found nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.pin_not_found",
+      "method": "pinChatMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to pin not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.pin_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.pin_not_found wrong code",
+      "method": "pinChatMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: message to pin not found"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.pin_not_found without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to pin not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.pin_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "pinChatMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to pin was not found"
+      },
+      "name": "message.pin_not_found nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.reply_not_found",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to be replied not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.reply_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.reply_not_found wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: message to be replied not found"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.reply_not_found without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message to be replied not found"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.reply_not_found",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: replied message not found"
+      },
+      "name": "message.reply_not_found nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.identifier_missing",
+      "method": "editMessageText",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message identifier is not specified"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.identifier_missing",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.identifier_missing wrong code",
+      "method": "editMessageText",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: message identifier is not specified"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.identifier_missing without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message identifier is not specified"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.identifier_missing",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "editMessageText",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message id is not specified"
+      },
+      "name": "message.identifier_missing nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.identifiers_missing",
+      "method": "deleteMessages",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message identifiers are not specified"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.identifiers_missing",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.identifiers_missing wrong code",
+      "method": "deleteMessages",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: message identifiers are not specified"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "message.identifiers_missing without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message identifiers are not specified"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "message.identifiers_missing",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "deleteMessages",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message identifiers are empty"
+      },
+      "name": "message.identifiers_missing nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "text.empty",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message text is empty"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "text.empty",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "text.empty wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: message text is empty"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "text.empty without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message text is empty"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "text.empty",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: text is empty"
+      },
+      "name": "text.empty nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "text.too_long",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: text is too long"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "text.too_long",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "text.too_long wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: text is too long"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "text.too_long without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: text is too long"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "text.too_long",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: message text is too long"
+      },
+      "name": "text.too_long nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "format.parse_mode_unsupported",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: unsupported parse_mode"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "format.parse_mode_unsupported",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "format.parse_mode_unsupported wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: unsupported parse_mode"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "format.parse_mode_unsupported without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: unsupported parse_mode"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "format.parse_mode_unsupported",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: Unsupported parse_mode"
+      },
+      "name": "format.parse_mode_unsupported nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "format.entity_not_object",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse MessageEntity: expected an Object"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "format.entity_not_object",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "format.entity_not_object wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: can't parse MessageEntity: expected an Object"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "format.entity_not_object without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse MessageEntity: expected an Object"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "format.entity_not_object",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse MessageEntity: expected an object"
+      },
+      "name": "format.entity_not_object nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "format.entity_type_unsupported",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse MessageEntity: Unsupported type specified"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "format.entity_type_unsupported",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "format.entity_type_unsupported wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: can't parse MessageEntity: Unsupported type specified"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "format.entity_type_unsupported without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse MessageEntity: Unsupported type specified"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "format.entity_type_unsupported",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse MessageEntity: unsupported type specified"
+      },
+      "name": "format.entity_type_unsupported nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "markup.invalid_json",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse reply keyboard markup JSON object"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "markup.invalid_json",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "markup.invalid_json wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: can't parse reply keyboard markup JSON object"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "markup.invalid_json without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse reply keyboard markup JSON object"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "markup.invalid_json",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse inline keyboard markup JSON object"
+      },
+      "name": "markup.invalid_json nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "markup.not_object",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: object expected as reply markup"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "markup.not_object",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "markup.not_object wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: object expected as reply markup"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "markup.not_object without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: object expected as reply markup"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "markup.not_object",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: object expected as reply_markup"
+      },
+      "name": "markup.not_object nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "markup.too_long",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: reply markup is too long"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "markup.too_long",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "markup.too_long wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: reply markup is too long"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "markup.too_long without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: reply markup is too long"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "markup.too_long",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: reply_markup is too long"
+      },
+      "name": "markup.too_long nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.id_missing",
+      "method": "getFile",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: file_id not specified"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.id_missing",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.id_missing wrong code",
+      "method": "getFile",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: file_id not specified"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.id_missing without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: file_id not specified"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.id_missing",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "getFile",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: file_id is not specified"
+      },
+      "name": "file.id_missing nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.id_invalid",
+      "method": "getFile",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: invalid file_id"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.id_invalid",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.id_invalid wrong code",
+      "method": "getFile",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: invalid file_id"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.id_invalid without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: invalid file_id"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.id_invalid",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "getFile",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: invalid file id"
+      },
+      "name": "file.id_invalid nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.unavailable",
+      "method": "getFile",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: wrong file_id or the file is temporarily unavailable"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.unavailable",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.unavailable wrong code",
+      "method": "getFile",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: wrong file_id or the file is temporarily unavailable"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.unavailable without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: wrong file_id or the file is temporarily unavailable"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.unavailable",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "getFile",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: wrong file_id or file is temporarily unavailable"
+      },
+      "name": "file.unavailable nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_invalid",
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: wrong HTTP URL specified"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.url_invalid",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_invalid wrong code",
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: wrong HTTP URL specified"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_invalid without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: wrong HTTP URL specified"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.url_invalid",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: wrong http URL specified"
+      },
+      "name": "file.url_invalid nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_fetch_failed",
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: failed to get HTTP URL content"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.url_fetch_failed",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_fetch_failed wrong code",
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: failed to get HTTP URL content"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_fetch_failed without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: failed to get HTTP URL content"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.url_fetch_failed",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: failed to get URL content"
+      },
+      "name": "file.url_fetch_failed nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_content_type_invalid",
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: wrong type of the web page content"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.url_content_type_invalid",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_content_type_invalid wrong code",
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: wrong type of the web page content"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_content_type_invalid without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: wrong type of the web page content"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.url_content_type_invalid",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: wrong type of web page content"
+      },
+      "name": "file.url_content_type_invalid nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_upload_failed",
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't upload file by URL"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.url_upload_failed",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_upload_failed wrong code",
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: can't upload file by URL"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "file.url_upload_failed without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't upload file by URL"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "file.url_upload_failed",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendPhoto",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't upload file by url"
+      },
+      "name": "file.url_upload_failed nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "user.deactivated",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: user is deactivated"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "user.deactivated",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "user.deactivated wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Forbidden: user is deactivated"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "user.deactivated without method context",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: user is deactivated"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "user.deactivated",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: user was deactivated"
+      },
+      "name": "user.deactivated nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.kicked",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot was kicked from the group chat"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "bot.kicked",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.kicked wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Forbidden: bot was kicked from the group chat"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.kicked variant 2",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot was kicked from the supergroup chat"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "bot.kicked",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.kicked variant 2 wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Forbidden: bot was kicked from the supergroup chat"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.kicked variant 3",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot was kicked from the channel chat"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "bot.kicked",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.kicked variant 3 wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Forbidden: bot was kicked from the channel chat"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.kicked without method context",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot was kicked from the channel chat"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "bot.kicked",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot was kicked from the chat"
+      },
+      "name": "bot.kicked nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.not_member",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot is not a member of the group chat"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "bot.not_member",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.not_member wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Forbidden: bot is not a member of the group chat"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.not_member variant 2",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot is not a member of the supergroup chat"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "bot.not_member",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.not_member variant 2 wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Forbidden: bot is not a member of the supergroup chat"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.not_member variant 3",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot is not a member of the channel chat"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "bot.not_member",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.not_member variant 3 wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Forbidden: bot is not a member of the channel chat"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "bot.not_member without method context",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot is not a member of the channel chat"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "bot.not_member",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: bot is not a member of the chat"
+      },
+      "name": "bot.not_member nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "chat.group_deleted",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: the group chat was deleted"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "chat.group_deleted",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "chat.group_deleted wrong code",
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Forbidden: the group chat was deleted"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "chat.group_deleted without method context",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: the group chat was deleted"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "chat.group_deleted",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "sendMessage",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Forbidden: group chat was deleted"
+      },
+      "name": "chat.group_deleted nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "member.is_administrator",
+      "method": "banChatMember",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: user is an administrator of the chat"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "member.is_administrator",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "member.is_administrator wrong code",
+      "method": "banChatMember",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: user is an administrator of the chat"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "member.is_administrator without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: user is an administrator of the chat"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "member.is_administrator",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "banChatMember",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: user is not an administrator of the chat"
+      },
+      "name": "member.is_administrator nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "permissions.invalid_json",
+      "method": "setChatPermissions",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse permissions JSON object"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "permissions.invalid_json",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "permissions.invalid_json wrong code",
+      "method": "setChatPermissions",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: can't parse permissions JSON object"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "permissions.invalid_json without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse permissions JSON object"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "permissions.invalid_json",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "setChatPermissions",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: can't parse chat permissions JSON object"
+      },
+      "name": "permissions.invalid_json nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "permissions.not_object",
+      "method": "setChatPermissions",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: object expected as permissions"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "permissions.not_object",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "permissions.not_object wrong code",
+      "method": "setChatPermissions",
+      "response": {
+        "ok": false,
+        "error_code": 403,
+        "description": "Bad Request: object expected as permissions"
+      },
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "name": "permissions.not_object without method context",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: object expected as permissions"
+      },
+      "expected": {
+        "status": "matched",
+        "id": "permissions.not_object",
+        "facts": {},
+        "candidates": []
+      }
+    },
+    {
+      "method": "setChatPermissions",
+      "response": {
+        "ok": false,
+        "error_code": 400,
+        "description": "Bad Request: object expected as chat permissions"
+      },
+      "name": "permissions.not_object nearby description",
+      "expected": {
+        "status": "unknown",
+        "facts": {},
+        "candidates": []
+      }
     }
   ]
 }

@@ -1,0 +1,59 @@
+name: Review upstream changes
+
+on:
+  schedule:
+    - cron: "17 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: upstream-review
+  cancel-in-progress: false
+
+jobs:
+  report:
+    if: github.ref == 'refs/heads/main' && github.repository == 'uburuntu/errorgram'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out the catalogue baseline
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Fetch the official server's default branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: tdlib/telegram-bot-api
+          path: .cache/upstream-source
+          fetch-depth: 1
+          submodules: false
+          persist-credentials: false
+
+      - name: Scan the fetched commit
+        run: >-
+          python3 tools/upstream.py scan --source .cache/upstream-source
+          --ref HEAD --output .cache/upstream-report/snapshot.json
+
+      - name: Compare with the committed baseline
+        run: |
+          cp catalogue/upstream.json .cache/upstream-report/baseline.json
+          python3 tools/upstream.py diff catalogue/upstream.json \
+            .cache/upstream-report/snapshot.json --output .cache/upstream-report/diff.json
+
+      - name: Summarize the review
+        run: |
+          python3 tools/upstream_report.py .cache/upstream-report/diff.json \
+            --output .cache/upstream-report/summary.md
+          cat .cache/upstream-report/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the full source report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: upstream-report
+          path: .cache/upstream-report/
+          if-no-files-found: error
+          retention-days: 90

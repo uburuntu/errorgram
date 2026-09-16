@@ -112,6 +112,6 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/message.delete_forbidden.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.delete_forbidden.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)

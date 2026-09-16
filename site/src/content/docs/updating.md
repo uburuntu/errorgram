@@ -7,6 +7,10 @@ Telegram adds methods, rewrites messages, and changes how errors reach the Bot A
 
 The survey produces candidates for review. It does not change the catalogue or recommend a recovery action.
 
+## Monthly review report
+
+The [upstream survey workflow](https://github.com/uburuntu/errorgram/actions/workflows/upstream.yml) runs on the first day of each month at 06:17 UTC and can also be started manually. Download its report artifact from the workflow run; artifacts are retained for 90 days. Review the report before proposing a catalogue change. The workflow never accepts candidates into the catalogue automatically.
+
 ## Scan a revision
 
 Use a local clone of the [official server](https://github.com/tdlib/telegram-bot-api). Fetching updates is separate from scanning:

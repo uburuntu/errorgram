@@ -1,0 +1,92 @@
+{
+  "id": "message.edit_not_found",
+  "category": "target_resolution",
+  "summary": "The message to edit could not be resolved.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: message to edit not found"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "editMessageText",
+      "editMessageCaption",
+      "editMessageReplyMarkup"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The message identifier is missing or nonpositive.",
+    "The bot cannot access messages in the chat.",
+    "A message lookup failed and its original error was replaced."
+  ],
+  "diagnostic_limits": "The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error.",
+  "evidence": [
+    {
+      "source": "live-2026-09-16",
+      "note": "Editing the test bot’s own message after confirmed deletion returned this description."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        14694,
+        14700
+      ],
+      "note": "The editMessageText path checks the target as \"message to edit\"."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        9084,
+        9102
+      ],
+      "note": "Missing identifiers and unavailable message access produce this operation-specific fallback."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        7390,
+        7399
+      ],
+      "note": "Failed lookups use the same fallback when an empty result is not allowed."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        108
+      ],
+      "note": "The fallback replaces only errors normalized to code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "editMessageText",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: message to edit not found"
+    }
+  },
+  "evidence_level": "observed",
+  "guidance": {
+    "action": "inspect_message_target_and_access",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Check the chat and message identifiers together, then confirm the bot can access the target message."
+    ]
+  }
+}

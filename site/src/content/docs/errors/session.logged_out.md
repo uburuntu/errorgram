@@ -116,6 +116,6 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](/errors/session.logged_out.md) · [Condition JSON](/errors/session.logged_out.json) · [Full catalogue and sources](/catalogue.json) · [JSON Schema](/schema.json)

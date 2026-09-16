@@ -7,8 +7,10 @@ REF ?= HEAD
 SNAPSHOT ?= .cache/upstream-next.json
 BASELINE ?= catalogue/upstream.json
 REPORT ?= .cache/upstream-diff.json
+LIVE_REPORT ?= .cache/live/report.json
+LIVE_ARGS ?=
 
-.PHONY: help setup generate check-generated validate lint test test-python test-js check build check-packages upstream-scan upstream-diff docs-build docs-check docs-dev docs-browser-setup docs-browser-test
+.PHONY: help setup generate check-generated validate lint test test-python test-js check build check-packages upstream-scan upstream-diff live-check docs-build docs-check docs-dev docs-browser-setup docs-browser-test
 
 help:
 	@printf '%s\n' \
@@ -22,7 +24,8 @@ help:
 	  'make docs-browser-setup Install Chromium for browser tests' \
 	  'make docs-browser-test Check search and navigation in Chromium' \
 	  'make upstream-scan  Scan SOURCE at REF into SNAPSHOT' \
-	  'make upstream-diff  Compare BASELINE with SNAPSHOT'
+	  'make upstream-diff  Compare BASELINE with SNAPSHOT' \
+	  'make live-check     Run optional Bot API checks with test credentials'
 
 setup:
 	$(UV) sync --locked --all-extras
@@ -60,6 +63,7 @@ check-packages:
 	$(UV) run --locked python tools/smoke_packages.py
 
 docs-build: check-generated
+	$(NPM) --prefix site run check
 	$(NPM) --prefix site run build
 
 docs-check: docs-build
@@ -79,3 +83,6 @@ upstream-scan:
 
 upstream-diff:
 	$(UV) run --locked python tools/upstream.py diff "$(BASELINE)" "$(SNAPSHOT)" --output "$(REPORT)"
+
+live-check:
+	$(UV) run --locked python tools/live_checks.py --output "$(LIVE_REPORT)" $(LIVE_ARGS)

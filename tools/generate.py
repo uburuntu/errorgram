@@ -82,7 +82,7 @@ def obsolete_outputs(rendered: dict[str, str]) -> list[str]:
         r"(?:site/src/content/docs/errors/[a-z][a-z0-9_.]*\.md"
         r"|site/public/errors/[a-z][a-z0-9_.]*\.(?:md|json)"
         r"|site/src/content/docs/catalogue\.md"
-        r"|site/public/(?:index|getting-started|python|javascript|matching|"
+        r"|site/public/(?:index|getting-started|playground|python|javascript|matching|"
         r"contributing|updating|agents|catalogue)\.md"
         r"|site/public/(?:catalogue|schema)\.json"
         r"|site/public/llms(?:-full)?\.txt)"

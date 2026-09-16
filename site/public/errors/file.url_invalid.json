@@ -1,0 +1,67 @@
+{
+  "id": "file.url_invalid",
+  "category": "file_input",
+  "summary": "The HTTP URL was rejected.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: wrong HTTP URL specified"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendPhoto",
+      "sendDocument"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The supplied external URL failed Telegram’s URL validation."
+  ],
+  "diagnostic_limits": "The response does not identify the invalid URL component or establish whether the resource is reachable.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        114,
+        115
+      ],
+      "note": "Two upstream URL validation errors are rewritten to the same description."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        106
+      ],
+      "note": "The rewrite runs only after the error is normalized to code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendPhoto",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: wrong HTTP URL specified"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "correct_file_url",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Provide a valid HTTP URL for the intended resource and check the selected method’s URL-input rules."
+    ]
+  }
+}

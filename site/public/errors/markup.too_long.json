@@ -1,0 +1,67 @@
+{
+  "id": "markup.too_long",
+  "category": "request_validation",
+  "summary": "Telegram rejected the size of the reply markup.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: reply markup is too long"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "editMessageReplyMarkup"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The reply markup exceeds a size constraint enforced by Telegram."
+  ],
+  "diagnostic_limits": "The mapping does not specify a size limit or identify which keyboard field exceeds it.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        121,
+        123
+      ],
+      "note": "REPLY_MARKUP_TOO_LONG becomes this description in the code-400 branch."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        106
+      ],
+      "note": "Normalizes lower codes, 404, and uppercase machine-style 403 errors to 400 before rewriting."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: reply markup is too long"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "reduce_reply_markup",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Reduce the keyboard or button payload and check the current limits for the chosen button types."
+    ]
+  }
+}

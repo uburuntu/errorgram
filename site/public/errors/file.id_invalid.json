@@ -1,0 +1,75 @@
+{
+  "id": "file.id_invalid",
+  "category": "target_resolution",
+  "summary": "The server could not resolve the supplied file_id.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: invalid file_id"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "getFile"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "A remote-file lookup failed and the normalizer replaced its original error."
+  ],
+  "diagnostic_limits": "The generic fallback does not identify a malformed ID, a bot-specific access issue, or permanent unavailability.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        7525,
+        7527
+      ],
+      "note": "Remote-file lookup errors receive the invalid file_id fallback."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        108
+      ],
+      "note": "The fallback replaces only errors normalized to code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        17032,
+        17035
+      ],
+      "note": "getFile uses this remote-file lookup."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "getFile",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: invalid file_id"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "verify_file_identifier",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Check that this bot received the exact file_id and that file_unique_id was not substituted."
+    ]
+  }
+}

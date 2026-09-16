@@ -50,8 +50,8 @@ Unknown errors pass through unchanged. Your application controls what happens ne
 The core has no runtime dependencies. The adapter requires grammY 1.46 or later
 within version 1. Node.js 22 or later is supported.
 
-The first catalogue contains 15 source-derived conditions. It is incomplete and
-has no live Telegram verification. Unrecognized responses return `unknown`;
+The catalogue contains 45 conditions, each with evidence and diagnostic limits.
+Coverage is incomplete. Unrecognized responses return `unknown`;
 conflicting evidence returns `ambiguous`; missing method context can return
 `insufficient_context`. Malformed responses return `not_api_error`.
 

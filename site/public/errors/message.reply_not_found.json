@@ -1,0 +1,77 @@
+{
+  "id": "message.reply_not_found",
+  "category": "target_resolution",
+  "summary": "The message being replied to could not be resolved.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: message to be replied not found"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "sendPhoto"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The bot cannot access the referenced message.",
+    "A reply-message lookup failed and its original error was replaced."
+  ],
+  "diagnostic_limits": "The response does not prove that the message was deleted. Reply settings and the referenced chat also affect this lookup.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        9190,
+        9198
+      ],
+      "note": "Reply lookup uses this fallback for unavailable access or a failed required-message lookup."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        7390,
+        7399
+      ],
+      "note": "allow_sending_without_reply can permit an empty result instead of failing."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        108
+      ],
+      "note": "The fallback replaces only errors normalized to code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: message to be replied not found"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "inspect_reply_target_and_access",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Verify the reply message and chat; omit the reply only if the application permits sending without it."
+    ]
+  }
+}

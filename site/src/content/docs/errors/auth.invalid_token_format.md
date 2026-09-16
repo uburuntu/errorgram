@@ -117,6 +117,6 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](/errors/auth.invalid_token_format.md) · [Condition JSON](/errors/auth.invalid_token_format.json) · [Full catalogue and sources](/catalogue.json) · [JSON Schema](/schema.json)

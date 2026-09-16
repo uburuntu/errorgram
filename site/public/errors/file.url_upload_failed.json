@@ -1,0 +1,67 @@
+{
+  "id": "file.url_upload_failed",
+  "category": "file_input",
+  "summary": "Telegram could not upload the file from its URL.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: can't upload file by URL"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendPhoto",
+      "sendDocument"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "Generating a file from the supplied URL failed."
+  ],
+  "diagnostic_limits": "The response mapping does not identify the original retrieval or file-generation failure.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        133,
+        135
+      ],
+      "note": "File generation failed is rewritten to this description and code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        106
+      ],
+      "note": "The rewrite runs only after the error is normalized to code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendPhoto",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: can't upload file by URL"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "inspect_url_file_input",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Check the URL and file requirements; use a direct upload if the method supports it and the application can supply the file."
+    ]
+  }
+}

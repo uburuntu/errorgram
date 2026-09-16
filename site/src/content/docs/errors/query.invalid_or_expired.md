@@ -118,6 +118,6 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](/errors/query.invalid_or_expired.md) · [Condition JSON](/errors/query.invalid_or_expired.json) · [Full catalogue and sources](/catalogue.json) · [JSON Schema](/schema.json)

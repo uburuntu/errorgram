@@ -2,7 +2,7 @@
 
 Canonical site: https://errorgram.rmbk.me/
 
-Catalogue 0.1.0 · schema 1.0.0 · reviewed 2026-09-15.
+Catalogue 0.1.0 · schema 1.0.0 · reviewed 2026-09-16.
 
 # Telegram errors, explained.
 
@@ -23,7 +23,7 @@ Search by Telegram's response text, a condition ID, or a framework exception nam
 | `Too Many Requests: retry after…` | [request.retry_after](https://errorgram.rmbk.me/errors/request.retry_after/) |
 | `Forbidden: bot was blocked by the user` | [bot.blocked_by_user](https://errorgram.rmbk.me/errors/bot.blocked_by_user/) |
 
-[Browse every condition →](https://errorgram.rmbk.me/catalogue/)
+[Try your response in the playground →](https://errorgram.rmbk.me/playground/) · [Browse every condition →](https://errorgram.rmbk.me/catalogue/)
 
 ## Give your handler something precise
 
@@ -50,7 +50,7 @@ The same IDs work across languages, logs, metrics, and documentation. Your appli
 
 ## Know what the evidence supports
 
-The first catalogue covers **15 conditions** from Bot API **10.3**. Examples are synthetic and derived from pinned server source; they have not been verified against the hosted API. Coverage will grow through reviewed contributions.
+The catalogue tracks Bot API **10.3**. Seven conditions also have recorded live observations. Examples use synthetic data; each record links to its evidence. Coverage is incomplete and grows through reviewed contributions.
 
 A stable ID describes the observed condition. It cannot prove every underlying cause. Unknown responses stay unknown, and transport failures and framework validation errors remain outside the catalogue.
 
@@ -134,6 +134,49 @@ Add `result.id` and `result.status` to your existing diagnostics. Once you under
 Pass the API method when available. Keep your existing fallback for an `unknown`, `ambiguous`, or `insufficient_context` result. Read [how matching works](https://errorgram.rmbk.me/matching/) before using a classification to branch.
 
 [Read this page as Markdown](https://errorgram.rmbk.me/getting-started.md)
+
+---
+
+# Try a Bot API response
+
+Canonical page: https://errorgram.rmbk.me/playground/
+
+## How to use the playground
+
+Paste the JSON response body and choose **Classify response**. The API method is optional; add it when a result needs more context. **Load example** inserts a synthetic catalogue response. **Clear** removes your input and result.
+
+The [interactive form](https://errorgram.rmbk.me/playground/) runs the Errorgram JavaScript classifier in your browser. No bot token is needed.
+
+For example, this response matches [request.retry_after](https://errorgram.rmbk.me/errors/request.retry_after/) and extracts `retry_after: 5`:
+
+```json
+{
+  "ok": false,
+  "error_code": 429,
+  "description": "Too Many Requests: retry after 5",
+  "parameters": { "retry_after": 5 }
+}
+```
+
+## Read the result
+
+| Status | Meaning |
+| --- | --- |
+| `matched` | One condition matches. Read its ID, summary, extracted facts, and linked reference. |
+| `unknown` | The response is an API error, but the catalogue has no matching rule. |
+| `insufficient_context` | A potential match requires the API method. Add it and try again. |
+| `ambiguous` | Competing matches or conflicting parameters prevent a single result. |
+| `not_api_error` | The JSON does not have the Bot API error-response shape. |
+
+The form accepts up to 32,768 characters and explains invalid JSON before classification. Empty facts, `{}`, means no values were extracted. A condition identifies what the response establishes, not every underlying cause. Each record states its evidence. Coverage is incomplete.
+
+## Privacy and reporting
+
+Your response and method are never uploaded, logged, or saved by this page, and are cleared when you leave. Classification requires JavaScript; the guide and reference do not.
+
+For an unknown error, [open the empty GitHub form](https://github.com/uburuntu/errorgram/issues/new?template=unknown-error.yml). Your input is never copied into it. Reports are public: remove tokens, token-bearing URLs, private identifiers, and message content before sharing. Include the method and whether your example is live, synthetic, or source-derived.
+
+[How matching works](https://errorgram.rmbk.me/matching/) · [Contribute a condition](https://errorgram.rmbk.me/contributing/) · [Read this page as Markdown](https://errorgram.rmbk.me/playground.md)
 
 ---
 
@@ -395,7 +438,7 @@ Adapters preserve framework fields, catch compatibility, and the original except
 
 The catalogue, generated bindings, documentation, and original project code use the [MIT license](https://github.com/uburuntu/errorgram/blob/main/LICENSE). External source references retain their own licenses.
 
-Have a new response but no complete patch? [Open an issue](https://github.com/uburuntu/errorgram/issues/new) with a sanitized example, the method, framework version, and what you have verified.
+Have a new response but no complete patch? [Try the playground](https://errorgram.rmbk.me/playground/), then [open the unknown-error form](https://github.com/uburuntu/errorgram/issues/new?template=unknown-error.yml) with a sanitized example, the method, framework version, and what you have verified. The form starts empty; the playground never copies your input into it.
 
 [Follow upstream changes](https://errorgram.rmbk.me/updating/) · [Read this page as Markdown](https://errorgram.rmbk.me/contributing.md)
 
@@ -408,6 +451,10 @@ Canonical page: https://errorgram.rmbk.me/updating/
 Telegram adds methods, rewrites messages, and changes how errors reach the Bot API. Errorgram tracks those changes against a pinned source revision.
 
 The survey produces candidates for review. It does not change the catalogue or recommend a recovery action.
+
+## Monthly review report
+
+The [upstream survey workflow](https://github.com/uburuntu/errorgram/actions/workflows/upstream.yml) runs on the first day of each month at 06:17 UTC and can also be started manually. Download its report artifact from the workflow run; artifacts are retained for 90 days. Review the report before proposing a catalogue change. The workflow never accepts candidates into the catalogue automatically.
 
 ## Scan a revision
 
@@ -477,6 +524,7 @@ Every guide and condition has a plain Markdown version. For example:
 
 ```text
 https://errorgram.rmbk.me/python.md
+https://errorgram.rmbk.me/playground.md
 https://errorgram.rmbk.me/errors/chat.not_found.md
 ```
 
@@ -489,7 +537,7 @@ The website URL for that condition is `https://errorgram.rmbk.me/errors/chat.not
 3. Keep possible causes separate from what the response establishes. Cite the condition page and its pinned evidence.
 4. Preserve unknown or ambiguous results. Leave retries, suppression, and state changes to the application.
 
-The initial catalogue is source-derived and incomplete. Examples are synthetic, and hosted API behavior has not been verified. Transport failures and framework validation errors are outside the inventory.
+Each record links to its source evidence and any live observations. Examples use synthetic data. Coverage is incomplete. Transport failures and framework validation errors are outside the inventory.
 
 `llms.txt` is a discovery convention, not a requirement for clients. All exports are ordinary static files available without JavaScript or authentication.
 
@@ -499,12 +547,12 @@ The initial catalogue is source-derived and incomplete. Examples are synthetic, 
 
 # Error catalogue
 
-**15 conditions** · catalogue `0.1.0` · reviewed 2026-09-15
+**45 conditions** · catalogue `0.1.0` · reviewed 2026-09-16
 
 Start with the response text, a stable ID, or a framework exception name.
 Each page explains the match, its limits, and the evidence behind it.
 
-Telegram Bot API error responses. Source-derived; hosted deployment behavior is unverified.
+Telegram Bot API error responses, reviewed against source with selected hosted observations. Live verification is incomplete; see each record’s evidence.
 Synthetic examples derived from the cited source.
 
 Coverage is incomplete. Unrecognized responses remain unknown.
@@ -513,18 +561,48 @@ Coverage is incomplete. Unrecognized responses remain unknown.
 | --- | --- |
 | [auth.invalid\_token\_format](https://errorgram.rmbk.me/errors/auth.invalid_token_format/) | The server rejected the token during local validation. |
 | [bot.blocked\_by\_user](https://errorgram.rmbk.me/errors/bot.blocked_by_user/) | The user has blocked the bot. |
+| [bot.kicked](https://errorgram.rmbk.me/errors/bot.kicked/) | The bot was removed or banned from the chat. |
+| [bot.not\_member](https://errorgram.rmbk.me/errors/bot.not_member/) | The bot lacks the chat membership required for this operation. |
+| [chat.group\_deleted](https://errorgram.rmbk.me/errors/chat.group_deleted/) | Telegram reports that the group chat was deleted. |
 | [chat.migrated](https://errorgram.rmbk.me/errors/chat.migrated/) | The group has moved to a supergroup with a new ID. |
 | [chat.not\_found](https://errorgram.rmbk.me/errors/chat.not_found/) | The bot could not resolve this chat. |
 | [file.download\_too\_large](https://errorgram.rmbk.me/errors/file.download_too_large/) | The file exceeds the server’s non-local download limit. |
+| [file.id\_invalid](https://errorgram.rmbk.me/errors/file.id_invalid/) | The server could not resolve the supplied file\_id. |
+| [file.id\_missing](https://errorgram.rmbk.me/errors/file.id_missing/) | The file\_id argument is missing or empty. |
+| [file.unavailable](https://errorgram.rmbk.me/errors/file.unavailable/) | The file could not be downloaded with the supplied identifier. |
+| [file.url\_content\_type\_invalid](https://errorgram.rmbk.me/errors/file.url_content_type_invalid/) | The retrieved web content is unsuitable for the requested operation. |
+| [file.url\_fetch\_failed](https://errorgram.rmbk.me/errors/file.url_fetch_failed/) | Telegram could not retrieve content from the HTTP URL. |
+| [file.url\_invalid](https://errorgram.rmbk.me/errors/file.url_invalid/) | The HTTP URL was rejected. |
+| [file.url\_upload\_failed](https://errorgram.rmbk.me/errors/file.url_upload_failed/) | Telegram could not upload the file from its URL. |
+| [format.entity\_not\_object](https://errorgram.rmbk.me/errors/format.entity_not_object/) | An item in the message entities array is not a JSON object. |
+| [format.entity\_type\_unsupported](https://errorgram.rmbk.me/errors/format.entity_type_unsupported/) | A message entity specifies an unsupported type. |
+| [format.parse\_mode\_unsupported](https://errorgram.rmbk.me/errors/format.parse_mode_unsupported/) | The requested parse\_mode is unsupported. |
+| [markup.invalid\_json](https://errorgram.rmbk.me/errors/markup.invalid_json/) | The reply\_markup argument is not valid JSON. |
+| [markup.not\_object](https://errorgram.rmbk.me/errors/markup.not_object/) | The reply\_markup value is not a JSON object. |
+| [markup.too\_long](https://errorgram.rmbk.me/errors/markup.too_long/) | Telegram rejected the size of the reply markup. |
+| [member.is\_administrator](https://errorgram.rmbk.me/errors/member.is_administrator/) | The operation was rejected because the target user is a chat administrator. |
+| [message.copy\_not\_found](https://errorgram.rmbk.me/errors/message.copy_not_found/) | The message to copy could not be resolved. |
 | [message.delete\_forbidden](https://errorgram.rmbk.me/errors/message.delete_forbidden/) | Telegram rejected deletion of the message. |
+| [message.delete\_not\_found](https://errorgram.rmbk.me/errors/message.delete_not_found/) | The message to delete could not be resolved. |
+| [message.edit\_not\_found](https://errorgram.rmbk.me/errors/message.edit_not_found/) | The message to edit could not be resolved. |
+| [message.forward\_not\_found](https://errorgram.rmbk.me/errors/message.forward_not_found/) | The message to forward could not be resolved. |
+| [message.identifier\_missing](https://errorgram.rmbk.me/errors/message.identifier_missing/) | The request did not specify a message identifier for the selected operation. |
+| [message.identifiers\_missing](https://errorgram.rmbk.me/errors/message.identifiers_missing/) | The request did not specify the list of message identifiers. |
 | [message.not\_modified](https://errorgram.rmbk.me/errors/message.not_modified/) | The requested message content and reply markup are unchanged. |
+| [message.pin\_not\_found](https://errorgram.rmbk.me/errors/message.pin_not_found/) | The message to pin could not be resolved. |
+| [message.reply\_not\_found](https://errorgram.rmbk.me/errors/message.reply_not_found/) | The message being replied to could not be resolved. |
+| [permissions.invalid\_json](https://errorgram.rmbk.me/errors/permissions.invalid_json/) | The permissions argument is not valid JSON. |
+| [permissions.not\_object](https://errorgram.rmbk.me/errors/permissions.not_object/) | The permissions value is not a JSON object. |
 | [query.invalid\_or\_expired](https://errorgram.rmbk.me/errors/query.invalid_or_expired/) | The query ID is invalid or its response window has expired. |
 | [request.retry\_after](https://errorgram.rmbk.me/errors/request.retry_after/) | The server asks the bot to wait before trying again. |
 | [routing.token\_not\_served](https://errorgram.rmbk.me/errors/routing.token_not_served/) | The token failed the server’s bot-ID or routing check. |
 | [server.restarting](https://errorgram.rmbk.me/errors/server.restarting/) | The bot client is closing for a server restart. |
 | [session.logged\_out](https://errorgram.rmbk.me/errors/session.logged_out/) | The bot session has logged out. |
+| [text.empty](https://errorgram.rmbk.me/errors/text.empty/) | The message text is empty. |
+| [text.too\_long](https://errorgram.rmbk.me/errors/text.too_long/) | The text exceeds the limit checked by this response path. |
 | [updates.concurrent\_poll](https://errorgram.rmbk.me/errors/updates.concurrent_poll/) | Another getUpdates request interrupted the pending long poll. |
 | [updates.webhook\_active](https://errorgram.rmbk.me/errors/updates.webhook_active/) | Polling was requested while a webhook is active or being configured. |
+| [user.deactivated](https://errorgram.rmbk.me/errors/user.deactivated/) | Telegram rejected the operation because the user is deactivated. |
 | [webhook.certificate\_too\_large](https://errorgram.rmbk.me/errors/webhook.certificate_too_large/) | The uploaded webhook certificate exceeds the server’s size limit. |
 
 Download the [catalogue JSON](https://errorgram.rmbk.me/catalogue.json) or
@@ -647,7 +725,7 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/auth.invalid_token_format.md) · [Condition JSON](https://errorgram.rmbk.me/errors/auth.invalid_token_format.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
@@ -767,9 +845,418 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/bot.blocked_by_user.md) · [Condition JSON](https://errorgram.rmbk.me/errors/bot.blocked_by_user.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Bot kicked · bot.kicked
+
+Canonical page: https://errorgram.rmbk.me/errors/bot.kicked/
+
+**Stable ID:** `bot.kicked` · **Evidence:** source derived
+
+The bot was removed or banned from the chat.
+
+The response does not identify who removed the bot or guarantee that rejoining is currently allowed.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+### Rule 1
+
+- JSON `error_code`: **403**.
+
+Exact description:
+
+```text
+Forbidden: bot was kicked from the group chat
+```
+
+### Rule 2
+
+- JSON `error_code`: **403**.
+
+Exact description:
+
+```text
+Forbidden: bot was kicked from the supergroup chat
+```
+
+### Rule 3
+
+- JSON `error_code`: **403**.
+
+Exact description:
+
+```text
+Forbidden: bot was kicked from the channel chat
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `deleteMessage`.
+
+## Possible causes
+
+- An active group records the bot as kicked.
+- The supergroup or channel membership status is banned.
+
+## Before deciding what to do
+
+**Application decision:** restore bot membership.
+**Repeat request:** after access change.
+
+- An authorized chat administrator must restore the bot’s access before the application resumes the operation.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 403,
+  "description": "Forbidden: bot was kicked from the group chat"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 403,
+    "description": "Forbidden: bot was kicked from the group chat",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'bot.kicked'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 403,
+  "description": "Forbidden: bot was kicked from the group chat"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "bot.kicked") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.BotKicked` |
+| aiogram | `errorgram.aiogram.BotKicked` extends `TelegramForbiddenError` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `bot.kicked` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:8832–8833](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L8832-L8833). An active group with a kicked bot fails edit or write access. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:8840–8847](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L8840-L8847). Banned supergroup and channel memberships produce the corresponding descriptions. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/bot.kicked.md) · [Condition JSON](https://errorgram.rmbk.me/errors/bot.kicked.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Bot not member · bot.not\_member
+
+Canonical page: https://errorgram.rmbk.me/errors/bot.not_member/
+
+**Stable ID:** `bot.not_member` · **Evidence:** source derived
+
+The bot lacks the chat membership required for this operation.
+
+Membership requirements depend on the chat type, public access, and operation. This is separate from the explicit kicked response.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+### Rule 1
+
+- JSON `error_code`: **403**.
+
+Exact description:
+
+```text
+Forbidden: bot is not a member of the group chat
+```
+
+### Rule 2
+
+- JSON `error_code`: **403**.
+
+Exact description:
+
+```text
+Forbidden: bot is not a member of the supergroup chat
+```
+
+### Rule 3
+
+- JSON `error_code`: **403**.
+
+Exact description:
+
+```text
+Forbidden: bot is not a member of the channel chat
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `deleteMessage`.
+
+## Possible causes
+
+- The bot has left an active group.
+- The bot is not a member of a supergroup or channel and the requested access requires membership.
+
+## Before deciding what to do
+
+**Application decision:** restore bot membership.
+**Repeat request:** after access change.
+
+- Add or rejoin the bot with the required access through an authorized chat administrator before resuming.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 403,
+  "description": "Forbidden: bot is not a member of the group chat"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 403,
+    "description": "Forbidden: bot is not a member of the group chat",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'bot.not_member'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 403,
+  "description": "Forbidden: bot is not a member of the group chat"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "bot.not_member") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.BotNotMember` |
+| aiogram | `errorgram.aiogram.BotNotMember` extends `TelegramForbiddenError` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `bot.not_member` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:8835–8836](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L8835-L8836). An active group with a departed bot fails edit or write access. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:8850–8856](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L8850-L8856). Public visibility and requested access determine whether supergroup or channel membership is required. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:9045–9055](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L9045-L9055). Banned, left, and restricted nonmember statuses do not count as membership. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/bot.not_member.md) · [Condition JSON](https://errorgram.rmbk.me/errors/bot.not_member.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Chat group deleted · chat.group\_deleted
+
+Canonical page: https://errorgram.rmbk.me/errors/chat.group_deleted/
+
+**Stable ID:** `chat.group_deleted` · **Evidence:** source derived
+
+Telegram reports that the group chat was deleted.
+
+This signature is distinct from group migration and does not supply a replacement chat identifier.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **403**.
+
+Exact description:
+
+```text
+Forbidden: the group chat was deleted
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `getChatAdministrators`.
+
+## Possible causes
+
+- The basic group is inactive and has no recorded supergroup replacement in this access check.
+
+## Before deciding what to do
+
+**Application decision:** retire or review chat target.
+**Repeat request:** after relevant change.
+
+- Review the stored target and stop repeated sends; use a replacement only when it is independently established.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 403,
+  "description": "Forbidden: the group chat was deleted"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 403,
+    "description": "Forbidden: the group chat was deleted",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'chat.group_deleted'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 403,
+  "description": "Forbidden: the group chat was deleted"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "chat.group_deleted") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.ChatGroupDeleted` |
+| aiogram | `errorgram.aiogram.ChatGroupDeleted` extends `TelegramForbiddenError` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `chat.group_deleted` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:8814–8829](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L8814-L8829). The inactive-group branch distinguishes a recorded migration from the deleted-group response. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/chat.group_deleted.md) · [Condition JSON](https://errorgram.rmbk.me/errors/chat.group_deleted.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
 ---
 
@@ -777,7 +1264,7 @@ Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
 
 Canonical page: https://errorgram.rmbk.me/errors/chat.migrated/
 
-**Stable ID:** `chat.migrated` · **Evidence:** source derived
+**Stable ID:** `chat.migrated` · **Evidence:** observed
 
 The group has moved to a supergroup with a new ID.
 
@@ -888,6 +1375,7 @@ Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
 
 ## Evidence
 
+- [Recorded observation](https://github.com/uburuntu/errorgram/blob/4314ac1f9d29d105b10e9b537a7643cc65d097aa/observations/2026-09-16.json). getChatAdministrators on an already migrated basic group returned the migration parameter. Its value is synthetic in the report. Accessed 2026-09-16.
 - [Bot API 10.3 · telegram-bot-api/Client.cpp:8821–8827](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L8821-L8827). The replacement chat ID is placed in response parameters. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
 - [Official documentation](https://core.telegram.org/bots/api#responseparameters). Documents migrate\_to\_chat\_id, including its maximum of 52 significant bits. Accessed 2026-09-15.
 
@@ -896,7 +1384,7 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/chat.migrated.md) · [Condition JSON](https://errorgram.rmbk.me/errors/chat.migrated.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
@@ -1018,7 +1506,7 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/chat.not_found.md) · [Condition JSON](https://errorgram.rmbk.me/errors/chat.not_found.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
@@ -1153,9 +1641,1847 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/file.download_too_large.md) · [Condition JSON](https://errorgram.rmbk.me/errors/file.download_too_large.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# File id invalid · file.id\_invalid
+
+Canonical page: https://errorgram.rmbk.me/errors/file.id_invalid/
+
+**Stable ID:** `file.id_invalid` · **Evidence:** source derived
+
+The server could not resolve the supplied file\_id.
+
+The generic fallback does not identify a malformed ID, a bot-specific access issue, or permanent unavailability.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: invalid file_id
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `getFile`.
+
+## Possible causes
+
+- A remote-file lookup failed and the normalizer replaced its original error.
+
+## Before deciding what to do
+
+**Application decision:** verify file identifier.
+**Repeat request:** after relevant change.
+
+- Check that this bot received the exact file\_id and that file\_unique\_id was not substituted.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `getFile`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: invalid file_id"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: invalid file_id",
+}
+result = classify(response, method='getFile')
+
+assert result.id == 'file.id_invalid'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: invalid file_id"
+};
+const result = classify(response, { method: "getFile" });
+
+if (result.status === "matched" && result.id === "file.id_invalid") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.FileIdInvalid` |
+| aiogram | `errorgram.aiogram.FileIdInvalid` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `file.id_invalid` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:7525–7527](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L7525-L7527). Remote-file lookup errors receive the invalid file\_id fallback. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–108](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L108). The fallback replaces only errors normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:17032–17035](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L17032-L17035). getFile uses this remote-file lookup. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/file.id_invalid.md) · [Condition JSON](https://errorgram.rmbk.me/errors/file.id_invalid.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# File id missing · file.id\_missing
+
+Canonical page: https://errorgram.rmbk.me/errors/file.id_missing/
+
+**Stable ID:** `file.id_missing` · **Evidence:** observed
+
+The file\_id argument is missing or empty.
+
+This response concerns a missing file identifier; it does not validate an upload or a nonempty identifier.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: file_id not specified
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `getFile`.
+
+## Possible causes
+
+- The remote-file lookup received an empty file\_id.
+
+## Before deciding what to do
+
+**Application decision:** supply file identifier.
+**Repeat request:** after relevant change.
+
+- Use the file\_id supplied for this bot by Telegram, rather than file\_unique\_id.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `getFile`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: file_id not specified"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: file_id not specified",
+}
+result = classify(response, method='getFile')
+
+assert result.id == 'file.id_missing'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: file_id not specified"
+};
+const result = classify(response, { method: "getFile" });
+
+if (result.status === "matched" && result.id === "file.id_missing") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.FileIdMissing` |
+| aiogram | `errorgram.aiogram.FileIdMissing` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `file.id_missing` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Recorded observation](https://github.com/uburuntu/errorgram/blob/4314ac1f9d29d105b10e9b537a7643cc65d097aa/observations/2026-09-16.json). getFile with an empty file\_id returned this description. Accessed 2026-09-16.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:9034–9041](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L9034-L9041). The remote-file helper directly rejects an empty file\_id. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:17032–17035](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L17032-L17035). getFile passes its file\_id argument to the helper. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/file.id_missing.md) · [Condition JSON](https://errorgram.rmbk.me/errors/file.id_missing.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# File unavailable · file.unavailable
+
+Canonical page: https://errorgram.rmbk.me/errors/file.unavailable/
+
+**Stable ID:** `file.unavailable` · **Evidence:** source derived
+
+The file could not be downloaded with the supplied identifier.
+
+The source notes that this path also hides upstream 5xx and 429 errors. The response supplies no retry delay and does not prove that the ID is wrong.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: wrong file_id or the file is temporarily unavailable
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `getFile`.
+
+## Possible causes
+
+- A started download stopped before completion without an active shutdown or logout state.
+
+## Before deciding what to do
+
+**Application decision:** check file and retry policy.
+**Repeat request:** after relevant change.
+
+- Verify the file\_id; if a temporary failure is plausible, apply a bounded retry policy without inventing a server delay.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `getFile`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: wrong file_id or the file is temporarily unavailable"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: wrong file_id or the file is temporarily unavailable",
+}
+result = classify(response, method='getFile')
+
+assert result.id == 'file.unavailable'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: wrong file_id or the file is temporarily unavailable"
+};
+const result = classify(response, { method: "getFile" });
+
+if (result.status === "matched" && result.id === "file.unavailable") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.FileUnavailable` |
+| aiogram | `errorgram.aiogram.FileUnavailable` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `file.unavailable` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:9385–9396](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L9385-L9396). An inactive, incomplete started download is converted to this generic 400 response. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:17056–17067](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L17056-L17067). The download failure is forwarded to waiting getFile queries through the normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/file.unavailable.md) · [Condition JSON](https://errorgram.rmbk.me/errors/file.unavailable.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# File url content type invalid · file.url\_content\_type\_invalid
+
+Canonical page: https://errorgram.rmbk.me/errors/file.url_content_type_invalid/
+
+**Stable ID:** `file.url_content_type_invalid` · **Evidence:** source derived
+
+The retrieved web content is unsuitable for the requested operation.
+
+The mapping does not identify a required MIME type or prove which part of the retrieved content is unsuitable.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: wrong type of the web page content
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendPhoto`, `sendDocument`.
+
+## Possible causes
+
+- The retrieved page did not provide usable media for the operation.
+
+## Before deciding what to do
+
+**Application decision:** check url content.
+**Repeat request:** after relevant change.
+
+- Check that the URL serves the intended media and that the selected method accepts that media type.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendPhoto`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: wrong type of the web page content"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: wrong type of the web page content",
+}
+result = classify(response, method='sendPhoto')
+
+assert result.id == 'file.url_content_type_invalid'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: wrong type of the web page content"
+};
+const result = classify(response, { method: "sendPhoto" });
+
+if (result.status === "matched" && result.id === "file.url_content_type_invalid") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.FileUrlContentTypeInvalid` |
+| aiogram | `errorgram.aiogram.FileUrlContentTypeInvalid` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `file.url_content_type_invalid` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:118–119](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L118-L119). WEBPAGE\_MEDIA\_EMPTY is rewritten to this description. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–106](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L106). The rewrite runs only after the error is normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/file.url_content_type_invalid.md) · [Condition JSON](https://errorgram.rmbk.me/errors/file.url_content_type_invalid.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# File url fetch failed · file.url\_fetch\_failed
+
+Canonical page: https://errorgram.rmbk.me/errors/file.url_fetch_failed/
+
+**Stable ID:** `file.url_fetch_failed` · **Evidence:** source derived
+
+Telegram could not retrieve content from the HTTP URL.
+
+The response does not distinguish DNS, network, TLS, HTTP, or origin-access failures.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: failed to get HTTP URL content
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendPhoto`, `sendDocument`.
+
+## Possible causes
+
+- Retrieving content from the URL failed.
+
+## Before deciding what to do
+
+**Application decision:** inspect url retrieval.
+**Repeat request:** after relevant change.
+
+- Check that Telegram can retrieve the resource without browser sessions or private-network access; retry only under a bounded policy.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendPhoto`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: failed to get HTTP URL content"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: failed to get HTTP URL content",
+}
+result = classify(response, method='sendPhoto')
+
+assert result.id == 'file.url_fetch_failed'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: failed to get HTTP URL content"
+};
+const result = classify(response, { method: "sendPhoto" });
+
+if (result.status === "matched" && result.id === "file.url_fetch_failed") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.FileUrlFetchFailed` |
+| aiogram | `errorgram.aiogram.FileUrlFetchFailed` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `file.url_fetch_failed` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:116–117](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L116-L117). WEBPAGE\_CURL\_FAILED is rewritten to this description. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–106](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L106). The rewrite runs only after the error is normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/file.url_fetch_failed.md) · [Condition JSON](https://errorgram.rmbk.me/errors/file.url_fetch_failed.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# File url invalid · file.url\_invalid
+
+Canonical page: https://errorgram.rmbk.me/errors/file.url_invalid/
+
+**Stable ID:** `file.url_invalid` · **Evidence:** source derived
+
+The HTTP URL was rejected.
+
+The response does not identify the invalid URL component or establish whether the resource is reachable.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: wrong HTTP URL specified
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendPhoto`, `sendDocument`.
+
+## Possible causes
+
+- The supplied external URL failed Telegram’s URL validation.
+
+## Before deciding what to do
+
+**Application decision:** correct file url.
+**Repeat request:** after relevant change.
+
+- Provide a valid HTTP URL for the intended resource and check the selected method’s URL-input rules.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendPhoto`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: wrong HTTP URL specified"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: wrong HTTP URL specified",
+}
+result = classify(response, method='sendPhoto')
+
+assert result.id == 'file.url_invalid'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: wrong HTTP URL specified"
+};
+const result = classify(response, { method: "sendPhoto" });
+
+if (result.status === "matched" && result.id === "file.url_invalid") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.FileUrlInvalid` |
+| aiogram | `errorgram.aiogram.FileUrlInvalid` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `file.url_invalid` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:114–115](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L114-L115). Two upstream URL validation errors are rewritten to the same description. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–106](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L106). The rewrite runs only after the error is normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/file.url_invalid.md) · [Condition JSON](https://errorgram.rmbk.me/errors/file.url_invalid.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# File url upload failed · file.url\_upload\_failed
+
+Canonical page: https://errorgram.rmbk.me/errors/file.url_upload_failed/
+
+**Stable ID:** `file.url_upload_failed` · **Evidence:** source derived
+
+Telegram could not upload the file from its URL.
+
+The response mapping does not identify the original retrieval or file-generation failure.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: can't upload file by URL
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendPhoto`, `sendDocument`.
+
+## Possible causes
+
+- Generating a file from the supplied URL failed.
+
+## Before deciding what to do
+
+**Application decision:** inspect url file input.
+**Repeat request:** after relevant change.
+
+- Check the URL and file requirements; use a direct upload if the method supports it and the application can supply the file.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendPhoto`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: can't upload file by URL"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: can't upload file by URL",
+}
+result = classify(response, method='sendPhoto')
+
+assert result.id == 'file.url_upload_failed'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: can't upload file by URL"
+};
+const result = classify(response, { method: "sendPhoto" });
+
+if (result.status === "matched" && result.id === "file.url_upload_failed") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.FileUrlUploadFailed` |
+| aiogram | `errorgram.aiogram.FileUrlUploadFailed` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `file.url_upload_failed` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:133–135](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L133-L135). File generation failed is rewritten to this description and code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–106](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L106). The rewrite runs only after the error is normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/file.url_upload_failed.md) · [Condition JSON](https://errorgram.rmbk.me/errors/file.url_upload_failed.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Format entity not object · format.entity\_not\_object
+
+Canonical page: https://errorgram.rmbk.me/errors/format.entity_not_object/
+
+**Stable ID:** `format.entity_not_object` · **Evidence:** source derived
+
+An item in the message entities array is not a JSON object.
+
+This identifies an item-shape failure, not invalid offsets, lengths, or markup syntax.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: can't parse MessageEntity: expected an Object
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `editMessageText`, `sendPhoto`.
+
+## Possible causes
+
+- An entities or caption\_entities array contains a non-object item.
+
+## Before deciding what to do
+
+**Application decision:** correct entity objects.
+**Repeat request:** after relevant change.
+
+- Provide each entity as an object with the fields required by its type, using the API’s UTF-16 offset convention.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: can't parse MessageEntity: expected an Object"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: can't parse MessageEntity: expected an Object",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'format.entity_not_object'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: can't parse MessageEntity: expected an Object"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "format.entity_not_object") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.FormatEntityNotObject` |
+| aiogram | `errorgram.aiogram.FormatEntityNotObject` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `format.entity_not_object` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:11938–11946](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L11938-L11946). Entity parsing rejects a non-object item before reading its fields. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:11984–11989](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L11984-L11989). The formatting helper wraps the item error in the MessageEntity description with code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/format.entity_not_object.md) · [Condition JSON](https://errorgram.rmbk.me/errors/format.entity_not_object.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Format entity type unsupported · format.entity\_type\_unsupported
+
+Canonical page: https://errorgram.rmbk.me/errors/format.entity_type_unsupported/
+
+**Stable ID:** `format.entity_type_unsupported` · **Evidence:** source derived
+
+A message entity specifies an unsupported type.
+
+The response does not identify the offending array item or establish whether its other fields are valid.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: can't parse MessageEntity: Unsupported type specified
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `editMessageText`, `sendPhoto`.
+
+## Possible causes
+
+- An entity object uses a type that the server’s entity parser does not support.
+
+## Before deciding what to do
+
+**Application decision:** correct entity type.
+**Repeat request:** after relevant change.
+
+- Use a supported MessageEntity type and include its required fields.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: can't parse MessageEntity: Unsupported type specified"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: can't parse MessageEntity: Unsupported type specified",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'format.entity_type_unsupported'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: can't parse MessageEntity: Unsupported type specified"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "format.entity_type_unsupported") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.FormatEntityTypeUnsupported` |
+| aiogram | `errorgram.aiogram.FormatEntityTypeUnsupported` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `format.entity_type_unsupported` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:11929–11946](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L11929-L11946). Unrecognized entity types return this literal, which propagates through get\_text\_entity. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:11984–11989](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L11984-L11989). The formatting helper wraps the item error with an explicit 400 code and preserves its initial capital. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/format.entity_type_unsupported.md) · [Condition JSON](https://errorgram.rmbk.me/errors/format.entity_type_unsupported.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Format parse mode unsupported · format.parse\_mode\_unsupported
+
+Canonical page: https://errorgram.rmbk.me/errors/format.parse_mode_unsupported/
+
+**Stable ID:** `format.parse_mode_unsupported` · **Evidence:** observed
+
+The requested parse\_mode is unsupported.
+
+The server lowercases parse\_mode before checking it. This response does not identify a malformed entity inside a supported mode.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: unsupported parse_mode
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `editMessageText`, `sendPhoto`.
+
+## Possible causes
+
+- Nonempty text was supplied with a parse\_mode that the server does not recognize.
+
+## Before deciding what to do
+
+**Application decision:** correct parse mode.
+**Repeat request:** after relevant change.
+
+- Choose a supported parse\_mode, or omit it and use plain text or explicit entities.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: unsupported parse_mode"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: unsupported parse_mode",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'format.parse_mode_unsupported'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: unsupported parse_mode"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "format.parse_mode_unsupported") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.FormatParseModeUnsupported` |
+| aiogram | `errorgram.aiogram.FormatParseModeUnsupported` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `format.parse_mode_unsupported` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Recorded observation](https://github.com/uburuntu/errorgram/blob/4314ac1f9d29d105b10e9b537a7643cc65d097aa/observations/2026-09-16.json). sendMessage with an unsupported parse\_mode returned this description. Accessed 2026-09-16.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:11961–11977](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L11961-L11977). Nonempty text accepts markdown, markdownv2, html, or the no-parsing path; other modes fail. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/format.parse_mode_unsupported.md) · [Condition JSON](https://errorgram.rmbk.me/errors/format.parse_mode_unsupported.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Markup invalid json · markup.invalid\_json
+
+Canonical page: https://errorgram.rmbk.me/errors/markup.invalid_json/
+
+**Stable ID:** `markup.invalid_json` · **Evidence:** source derived
+
+The reply\_markup argument is not valid JSON.
+
+Valid JSON with the wrong shape or invalid button fields produces different errors.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: can't parse reply keyboard markup JSON object
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `editMessageReplyMarkup`.
+
+## Possible causes
+
+- A nonempty reply\_markup argument failed JSON decoding.
+
+## Before deciding what to do
+
+**Application decision:** correct reply markup json.
+**Repeat request:** after relevant change.
+
+- Serialize reply\_markup as a JSON object with the structure required by the selected keyboard type.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: can't parse reply keyboard markup JSON object"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: can't parse reply keyboard markup JSON object",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'markup.invalid_json'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: can't parse reply keyboard markup JSON object"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "markup.invalid_json") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MarkupInvalidJson` |
+| aiogram | `errorgram.aiogram.MarkupInvalidJson` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `markup.invalid_json` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:10504–10518](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L10504-L10518). The reply\_markup parser emits this literal only when JSON decoding fails. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/markup.invalid_json.md) · [Condition JSON](https://errorgram.rmbk.me/errors/markup.invalid_json.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Markup not object · markup.not\_object
+
+Canonical page: https://errorgram.rmbk.me/errors/markup.not_object/
+
+**Stable ID:** `markup.not_object` · **Evidence:** source derived
+
+The reply\_markup value is not a JSON object.
+
+This response does not validate the contents of an otherwise well-formed keyboard object.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: object expected as reply markup
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `editMessageReplyMarkup`.
+
+## Possible causes
+
+- reply\_markup decoded successfully but its top-level value is not an object.
+
+## Before deciding what to do
+
+**Application decision:** correct reply markup shape.
+**Repeat request:** after relevant change.
+
+- Use a reply\_markup object instead of a top-level array, scalar, or null value.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: object expected as reply markup"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: object expected as reply markup",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'markup.not_object'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: object expected as reply markup"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "markup.not_object") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MarkupNotObject` |
+| aiogram | `errorgram.aiogram.MarkupNotObject` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `markup.not_object` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:10521–10525](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L10521-L10525). The decoded reply markup must have object type. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/markup.not_object.md) · [Condition JSON](https://errorgram.rmbk.me/errors/markup.not_object.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Markup too long · markup.too\_long
+
+Canonical page: https://errorgram.rmbk.me/errors/markup.too_long/
+
+**Stable ID:** `markup.too_long` · **Evidence:** source derived
+
+Telegram rejected the size of the reply markup.
+
+The mapping does not specify a size limit or identify which keyboard field exceeds it.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: reply markup is too long
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `editMessageReplyMarkup`.
+
+## Possible causes
+
+- The reply markup exceeds a size constraint enforced by Telegram.
+
+## Before deciding what to do
+
+**Application decision:** reduce reply markup.
+**Repeat request:** after relevant change.
+
+- Reduce the keyboard or button payload and check the current limits for the chosen button types.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: reply markup is too long"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: reply markup is too long",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'markup.too_long'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: reply markup is too long"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "markup.too_long") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MarkupTooLong` |
+| aiogram | `errorgram.aiogram.MarkupTooLong` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `markup.too_long` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:121–123](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L121-L123). REPLY\_MARKUP\_TOO\_LONG becomes this description in the code-400 branch. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–106](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L106). Normalizes lower codes, 404, and uppercase machine-style 403 errors to 400 before rewriting. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/markup.too_long.md) · [Condition JSON](https://errorgram.rmbk.me/errors/markup.too_long.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Member is administrator · member.is\_administrator
+
+Canonical page: https://errorgram.rmbk.me/errors/member.is_administrator/
+
+**Stable ID:** `member.is_administrator` · **Evidence:** source derived
+
+The operation was rejected because the target user is a chat administrator.
+
+The mapping does not identify the user’s exact administrative role or authorize changing it.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: user is an administrator of the chat
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `banChatMember`, `restrictChatMember`.
+
+## Possible causes
+
+- The requested action targets a chat administrator.
+
+## Before deciding what to do
+
+**Application decision:** review target member role.
+**Repeat request:** after relevant change.
+
+- Confirm the intended user and current role; any necessary role change must follow the chat’s authorization policy.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `banChatMember`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: user is an administrator of the chat"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: user is an administrator of the chat",
+}
+result = classify(response, method='banChatMember')
+
+assert result.id == 'member.is_administrator'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: user is an administrator of the chat"
+};
+const result = classify(response, { method: "banChatMember" });
+
+if (result.status === "matched" && result.id === "member.is_administrator") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MemberIsAdministrator` |
+| aiogram | `errorgram.aiogram.MemberIsAdministrator` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `member.is_administrator` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:130–132](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L130-L132). USER\_ADMIN\_INVALID becomes this description with code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–106](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L106). Uppercase machine-style 403 errors can become 400 before this rewrite. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/member.is_administrator.md) · [Condition JSON](https://errorgram.rmbk.me/errors/member.is_administrator.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Message copy not found · message.copy\_not\_found
+
+Canonical page: https://errorgram.rmbk.me/errors/message.copy_not_found/
+
+**Stable ID:** `message.copy_not_found` · **Evidence:** source derived
+
+The message to copy could not be resolved.
+
+The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: message to copy not found
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `copyMessage`.
+
+## Possible causes
+
+- The message identifier is missing or nonpositive.
+- The bot cannot access messages in the chat.
+- A message lookup failed and its original error was replaced.
+
+## Before deciding what to do
+
+**Application decision:** inspect message target and access.
+**Repeat request:** after relevant change.
+
+- Check the chat and message identifiers together, then confirm the bot can access the target message.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `copyMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to copy not found"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: message to copy not found",
+}
+result = classify(response, method='copyMessage')
+
+assert result.id == 'message.copy_not_found'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to copy not found"
+};
+const result = classify(response, { method: "copyMessage" });
+
+if (result.status === "matched" && result.id === "message.copy_not_found") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MessageCopyNotFound` |
+| aiogram | `errorgram.aiogram.MessageCopyNotFound` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `message.copy_not_found` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:14373–14385](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L14373-L14385). The copyMessage path checks the source as "message to copy". Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:9084–9102](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L9084-L9102). Missing identifiers and unavailable message access produce this operation-specific fallback. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:7390–7399](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L7390-L7399). Failed lookups use the same fallback when an empty result is not allowed. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–108](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L108). The fallback replaces only errors normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/message.copy_not_found.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.copy_not_found.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
 ---
 
@@ -1273,9 +3599,635 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/message.delete_forbidden.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.delete_forbidden.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Message delete not found · message.delete\_not\_found
+
+Canonical page: https://errorgram.rmbk.me/errors/message.delete_not_found/
+
+**Stable ID:** `message.delete_not_found` · **Evidence:** observed
+
+The message to delete could not be resolved.
+
+The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error. Batch deletion can skip missing messages; this response is not an inventory of deleted items.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: message to delete not found
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `deleteMessage`, `deleteMessages`.
+
+## Possible causes
+
+- The message identifier is missing or nonpositive.
+- The bot cannot access messages in the chat.
+- A message lookup failed and its original error was replaced.
+
+## Before deciding what to do
+
+**Application decision:** inspect message target and access.
+**Repeat request:** after relevant change.
+
+- Check the chat and message identifiers together, then confirm the bot can access the target message.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `deleteMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to delete not found"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: message to delete not found",
+}
+result = classify(response, method='deleteMessage')
+
+assert result.id == 'message.delete_not_found'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to delete not found"
+};
+const result = classify(response, { method: "deleteMessage" });
+
+if (result.status === "matched" && result.id === "message.delete_not_found") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MessageDeleteNotFound` |
+| aiogram | `errorgram.aiogram.MessageDeleteNotFound` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `message.delete_not_found` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Recorded observation](https://github.com/uburuntu/errorgram/blob/4314ac1f9d29d105b10e9b537a7643cc65d097aa/observations/2026-09-16.json). Deleting the test bot’s own message again after confirmed deletion returned this description. Accessed 2026-09-16.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:14989–15006](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L14989-L15006). Single and batch deletion use "message to delete"; the batch path permits missing items. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:9084–9102](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L9084-L9102). Missing identifiers and unavailable message access produce this operation-specific fallback. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:7390–7399](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L7390-L7399). Failed lookups use the same fallback when an empty result is not allowed. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–108](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L108). The fallback replaces only errors normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/message.delete_not_found.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.delete_not_found.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Message edit not found · message.edit\_not\_found
+
+Canonical page: https://errorgram.rmbk.me/errors/message.edit_not_found/
+
+**Stable ID:** `message.edit_not_found` · **Evidence:** observed
+
+The message to edit could not be resolved.
+
+The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: message to edit not found
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `editMessageText`, `editMessageCaption`, `editMessageReplyMarkup`.
+
+## Possible causes
+
+- The message identifier is missing or nonpositive.
+- The bot cannot access messages in the chat.
+- A message lookup failed and its original error was replaced.
+
+## Before deciding what to do
+
+**Application decision:** inspect message target and access.
+**Repeat request:** after relevant change.
+
+- Check the chat and message identifiers together, then confirm the bot can access the target message.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `editMessageText`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to edit not found"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: message to edit not found",
+}
+result = classify(response, method='editMessageText')
+
+assert result.id == 'message.edit_not_found'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to edit not found"
+};
+const result = classify(response, { method: "editMessageText" });
+
+if (result.status === "matched" && result.id === "message.edit_not_found") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MessageEditNotFound` |
+| aiogram | `errorgram.aiogram.MessageEditNotFound` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `message.edit_not_found` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Recorded observation](https://github.com/uburuntu/errorgram/blob/4314ac1f9d29d105b10e9b537a7643cc65d097aa/observations/2026-09-16.json). Editing the test bot’s own message after confirmed deletion returned this description. Accessed 2026-09-16.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:14694–14700](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L14694-L14700). The editMessageText path checks the target as "message to edit". Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:9084–9102](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L9084-L9102). Missing identifiers and unavailable message access produce this operation-specific fallback. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:7390–7399](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L7390-L7399). Failed lookups use the same fallback when an empty result is not allowed. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–108](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L108). The fallback replaces only errors normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/message.edit_not_found.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.edit_not_found.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Message forward not found · message.forward\_not\_found
+
+Canonical page: https://errorgram.rmbk.me/errors/message.forward_not_found/
+
+**Stable ID:** `message.forward_not_found` · **Evidence:** source derived
+
+The message to forward could not be resolved.
+
+The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: message to forward not found
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `forwardMessage`, `forwardMessages`.
+
+## Possible causes
+
+- The message identifier is missing or nonpositive.
+- The bot cannot access messages in the chat.
+- A message lookup failed and its original error was replaced.
+
+## Before deciding what to do
+
+**Application decision:** inspect message target and access.
+**Repeat request:** after relevant change.
+
+- Check the chat and message identifiers together, then confirm the bot can access the target message.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `forwardMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to forward not found"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: message to forward not found",
+}
+result = classify(response, method='forwardMessage')
+
+assert result.id == 'message.forward_not_found'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to forward not found"
+};
+const result = classify(response, { method: "forwardMessage" });
+
+if (result.status === "matched" && result.id === "message.forward_not_found") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MessageForwardNotFound` |
+| aiogram | `errorgram.aiogram.MessageForwardNotFound` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `message.forward_not_found` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:14441–14452](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L14441-L14452). The forwardMessage path checks the source as "message to forward". Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:9084–9102](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L9084-L9102). Missing identifiers and unavailable message access produce this operation-specific fallback. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:7390–7399](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L7390-L7399). Failed lookups use the same fallback when an empty result is not allowed. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–108](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L108). The fallback replaces only errors normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/message.forward_not_found.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.forward_not_found.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Message identifier missing · message.identifier\_missing
+
+Canonical page: https://errorgram.rmbk.me/errors/message.identifier_missing/
+
+**Stable ID:** `message.identifier_missing` · **Evidence:** source derived
+
+The request did not specify a message identifier for the selected operation.
+
+This signature does not diagnose all missing message\_id arguments; a chat-based lookup may return an operation-specific not-found error.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: message identifier is not specified
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `editMessageText`, `editMessageCaption`.
+
+## Possible causes
+
+- The inline-message path was selected without a nonempty inline\_message\_id.
+
+## Before deciding what to do
+
+**Application decision:** supply message target.
+**Repeat request:** after relevant change.
+
+- Supply the intended inline\_message\_id or the appropriate chat\_id and message\_id pair.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `editMessageText`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message identifier is not specified"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: message identifier is not specified",
+}
+result = classify(response, method='editMessageText')
+
+assert result.id == 'message.identifier_missing'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message identifier is not specified"
+};
+const result = classify(response, { method: "editMessageText" });
+
+if (result.status === "matched" && result.id === "message.identifier_missing") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MessageIdentifierMissing` |
+| aiogram | `errorgram.aiogram.MessageIdentifierMissing` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `message.identifier_missing` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13540–13545](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13540-L13545). The inline-message identifier helper rejects an empty argument. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:14659–14665](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L14659-L14665). Editing takes this path when chat\_id is empty and the parsed message\_id is zero. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/message.identifier_missing.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.identifier_missing.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Message identifiers missing · message.identifiers\_missing
+
+Canonical page: https://errorgram.rmbk.me/errors/message.identifiers_missing/
+
+**Stable ID:** `message.identifiers_missing` · **Evidence:** source derived
+
+The request did not specify the list of message identifiers.
+
+An empty argument and an encoded empty JSON array are different inputs; this response covers the former.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: message identifiers are not specified
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `deleteMessages`, `forwardMessages`, `copyMessages`.
+
+## Possible causes
+
+- The message\_ids argument is absent or empty.
+
+## Before deciding what to do
+
+**Application decision:** supply message identifiers.
+**Repeat request:** after relevant change.
+
+- Provide a JSON array of the intended message identifiers and check the method-specific count limit.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `deleteMessages`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message identifiers are not specified"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: message identifiers are not specified",
+}
+result = classify(response, method='deleteMessages')
+
+assert result.id == 'message.identifiers_missing'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message identifiers are not specified"
+};
+const result = classify(response, { method: "deleteMessages" });
+
+if (result.status === "matched" && result.id === "message.identifiers_missing") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MessageIdentifiersMissing` |
+| aiogram | `errorgram.aiogram.MessageIdentifiersMissing` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `message.identifiers_missing` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13500–13504](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13500-L13504). The list parser rejects an absent or empty argument before JSON decoding. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:15000–15003](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L15000-L15003). deleteMessages passes message\_ids to this parser. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/message.identifiers_missing.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.identifiers_missing.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
 ---
 
@@ -1283,7 +4235,7 @@ Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
 
 Canonical page: https://errorgram.rmbk.me/errors/message.not_modified/
 
-**Stable ID:** `message.not_modified` · **Evidence:** source derived
+**Stable ID:** `message.not_modified` · **Evidence:** observed
 
 The requested message content and reply markup are unchanged.
 
@@ -1386,6 +4338,7 @@ Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
 
 ## Evidence
 
+- [Recorded observation](https://github.com/uburuntu/errorgram/blob/4314ac1f9d29d105b10e9b537a7643cc65d097aa/observations/2026-09-16.json). Editing a newly created bot message with identical text returned this description. The test message was then deleted. Accessed 2026-09-16.
 - [Bot API 10.3 · telegram-bot-api/Client.cpp:106–113](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L106-L113). MESSAGE\_NOT\_MODIFIED is rewritten here; prefix and initial-case handling are at lines 165-205. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
 
 Source references identify the reviewed revision, not the first release
@@ -1393,9 +4346,503 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/message.not_modified.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.not_modified.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Message pin not found · message.pin\_not\_found
+
+Canonical page: https://errorgram.rmbk.me/errors/message.pin_not_found/
+
+**Stable ID:** `message.pin_not_found` · **Evidence:** source derived
+
+The message to pin could not be resolved.
+
+The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: message to pin not found
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `pinChatMessage`.
+
+## Possible causes
+
+- The message identifier is missing or nonpositive.
+- The bot cannot access messages in the chat.
+- A message lookup failed and its original error was replaced.
+
+## Before deciding what to do
+
+**Application decision:** inspect message target and access.
+**Repeat request:** after relevant change.
+
+- Check the chat and message identifiers together, then confirm the bot can access the target message.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `pinChatMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to pin not found"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: message to pin not found",
+}
+result = classify(response, method='pinChatMessage')
+
+assert result.id == 'message.pin_not_found'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to pin not found"
+};
+const result = classify(response, { method: "pinChatMessage" });
+
+if (result.status === "matched" && result.id === "message.pin_not_found") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MessagePinNotFound` |
+| aiogram | `errorgram.aiogram.MessagePinNotFound` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `message.pin_not_found` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:16054–16065](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L16054-L16065). The pinChatMessage path checks the target as "message to pin". Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:9084–9102](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L9084-L9102). Missing identifiers and unavailable message access produce this operation-specific fallback. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:7390–7399](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L7390-L7399). Failed lookups use the same fallback when an empty result is not allowed. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–108](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L108). The fallback replaces only errors normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/message.pin_not_found.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.pin_not_found.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Message reply not found · message.reply\_not\_found
+
+Canonical page: https://errorgram.rmbk.me/errors/message.reply_not_found/
+
+**Stable ID:** `message.reply_not_found` · **Evidence:** source derived
+
+The message being replied to could not be resolved.
+
+The response does not prove that the message was deleted. Reply settings and the referenced chat also affect this lookup.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: message to be replied not found
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `sendPhoto`.
+
+## Possible causes
+
+- The bot cannot access the referenced message.
+- A reply-message lookup failed and its original error was replaced.
+
+## Before deciding what to do
+
+**Application decision:** inspect reply target and access.
+**Repeat request:** after relevant change.
+
+- Verify the reply message and chat; omit the reply only if the application permits sending without it.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to be replied not found"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: message to be replied not found",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'message.reply_not_found'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message to be replied not found"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "message.reply_not_found") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.MessageReplyNotFound` |
+| aiogram | `errorgram.aiogram.MessageReplyNotFound` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `message.reply_not_found` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:9190–9198](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L9190-L9198). Reply lookup uses this fallback for unavailable access or a failed required-message lookup. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:7390–7399](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L7390-L7399). allow\_sending\_without\_reply can permit an empty result instead of failing. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:85–108](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L85-L108). The fallback replaces only errors normalized to code 400. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/message.reply_not_found.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.reply_not_found.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Permissions invalid json · permissions.invalid\_json
+
+Canonical page: https://errorgram.rmbk.me/errors/permissions.invalid_json/
+
+**Stable ID:** `permissions.invalid_json` · **Evidence:** source derived
+
+The permissions argument is not valid JSON.
+
+This is a request-format error; it does not establish whether the bot has permission to change chat rights.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: can't parse permissions JSON object
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `setChatPermissions`, `restrictChatMember`.
+
+## Possible causes
+
+- The supplied permissions argument failed JSON decoding.
+
+## Before deciding what to do
+
+**Application decision:** correct permissions json.
+**Repeat request:** after relevant change.
+
+- Serialize permissions as a ChatPermissions object and verify the intended boolean values.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `setChatPermissions`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: can't parse permissions JSON object"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: can't parse permissions JSON object",
+}
+result = classify(response, method='setChatPermissions')
+
+assert result.id == 'permissions.invalid_json'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: can't parse permissions JSON object"
+};
+const result = classify(response, { method: "setChatPermissions" });
+
+if (result.status === "matched" && result.id === "permissions.invalid_json") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.PermissionsInvalidJson` |
+| aiogram | `errorgram.aiogram.PermissionsInvalidJson` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `permissions.invalid_json` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:12555–12561](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L12555-L12561). An explicitly supplied permissions argument is decoded as JSON and rejected here if decoding fails. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/permissions.invalid_json.md) · [Condition JSON](https://errorgram.rmbk.me/errors/permissions.invalid_json.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Permissions not object · permissions.not\_object
+
+Canonical page: https://errorgram.rmbk.me/errors/permissions.not_object/
+
+**Stable ID:** `permissions.not_object` · **Evidence:** source derived
+
+The permissions value is not a JSON object.
+
+This validates only the top-level shape, not individual rights or the bot’s authority to change them.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: object expected as permissions
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `setChatPermissions`, `restrictChatMember`.
+
+## Possible causes
+
+- The permissions argument decoded to an array, scalar, or null instead of an object.
+
+## Before deciding what to do
+
+**Application decision:** correct permissions shape.
+**Repeat request:** after relevant change.
+
+- Provide a ChatPermissions object with the intended rights, then check the operation’s access requirements.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `setChatPermissions`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: object expected as permissions"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: object expected as permissions",
+}
+result = classify(response, method='setChatPermissions')
+
+assert result.id == 'permissions.not_object'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: object expected as permissions"
+};
+const result = classify(response, { method: "setChatPermissions" });
+
+if (result.status === "matched" && result.id === "permissions.not_object") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.PermissionsNotObject` |
+| aiogram | `errorgram.aiogram.PermissionsNotObject` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `permissions.not_object` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:12564–12566](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L12564-L12566). Decoded permissions must have object type. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/permissions.not_object.md) · [Condition JSON](https://errorgram.rmbk.me/errors/permissions.not_object.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
 ---
 
@@ -1514,7 +4961,7 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/query.invalid_or_expired.md) · [Condition JSON](https://errorgram.rmbk.me/errors/query.invalid_or_expired.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
@@ -1649,7 +5096,7 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/request.retry_after.md) · [Condition JSON](https://errorgram.rmbk.me/errors/request.retry_after.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
@@ -1772,7 +5219,7 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/routing.token_not_served.md) · [Condition JSON](https://errorgram.rmbk.me/errors/routing.token_not_served.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
@@ -1890,7 +5337,7 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/server.restarting.md) · [Condition JSON](https://errorgram.rmbk.me/errors/server.restarting.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
@@ -2009,9 +5456,255 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/session.logged_out.md) · [Condition JSON](https://errorgram.rmbk.me/errors/session.logged_out.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Text empty · text.empty
+
+Canonical page: https://errorgram.rmbk.me/errors/text.empty/
+
+**Stable ID:** `text.empty` · **Evidence:** observed
+
+The message text is empty.
+
+This validates the message text input; it does not establish a rule for optional media captions.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: message text is empty
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `editMessageText`.
+
+## Possible causes
+
+- The text argument is absent or empty.
+
+## Before deciding what to do
+
+**Application decision:** supply message text.
+**Repeat request:** after relevant change.
+
+- Provide nonempty text appropriate for the selected method.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message text is empty"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: message text is empty",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'text.empty'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: message text is empty"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "text.empty") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.TextEmpty` |
+| aiogram | `errorgram.aiogram.TextEmpty` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `text.empty` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Recorded observation](https://github.com/uburuntu/errorgram/blob/4314ac1f9d29d105b10e9b537a7643cc65d097aa/observations/2026-09-16.json). sendMessage with empty text returned this description. Accessed 2026-09-16.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:12039–12052](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L12039-L12052). Text-message construction rejects empty text before formatting. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13981–13993](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13981-L13993). sendMessage constructs its text with this helper. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/text.empty.md) · [Condition JSON](https://errorgram.rmbk.me/errors/text.empty.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# Text too long · text.too\_long
+
+Canonical page: https://errorgram.rmbk.me/errors/text.too_long/
+
+**Stable ID:** `text.too_long` · **Evidence:** source derived
+
+The text exceeds the limit checked by this response path.
+
+The local guard is not the public character limit for every method. Other message and caption limits can produce different descriptions.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **400**.
+
+Exact description:
+
+```text
+Bad Request: text is too long
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `editMessageText`, `sendPhoto`.
+
+## Possible causes
+
+- Text supplied to the formatting helper exceeds its local byte-size guard.
+
+## Before deciding what to do
+
+**Application decision:** shorten text for method.
+**Repeat request:** after relevant change.
+
+- Check the selected method’s text or caption limits and preserve valid formatting when shortening or splitting text.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: text is too long"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 400,
+    "description": "Bad Request: text is too long",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'text.too_long'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 400,
+  "description": "Bad Request: text is too long"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "text.too_long") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.TextTooLong` |
+| aiogram | `errorgram.aiogram.TextTooLong` extends `TelegramBadRequest` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `text.too_long` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:11955–11958](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L11955-L11958). The formatting helper rejects text.size() greater than 32768 before parsing. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:13800–13803](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L13800-L13803). Method validation errors are passed to the response normalizer. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/text.too_long.md) · [Condition JSON](https://errorgram.rmbk.me/errors/text.too_long.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
 ---
 
@@ -2129,7 +5822,7 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/updates.concurrent_poll.md) · [Condition JSON](https://errorgram.rmbk.me/errors/updates.concurrent_poll.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
@@ -2249,9 +5942,132 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/updates.webhook_active.md) · [Condition JSON](https://errorgram.rmbk.me/errors/updates.webhook_active.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
+
+---
+
+# User deactivated · user.deactivated
+
+Canonical page: https://errorgram.rmbk.me/errors/user.deactivated/
+
+**Stable ID:** `user.deactivated` · **Evidence:** source derived
+
+Telegram rejected the operation because the user is deactivated.
+
+The response establishes the current rejection; it does not expose account history or a replacement recipient.
+
+## When it matches
+
+Every field in a rule must match. Alternative rules are joined with OR.
+Codes below are JSON response fields, not inferred HTTP statuses.
+
+- JSON `error_code`: **403**.
+
+Exact description:
+
+```text
+Forbidden: user is deactivated
+```
+
+See [matching rules](https://errorgram.rmbk.me/matching/) for parameter precedence
+and unknown or ambiguous results.
+
+**Illustrative methods:** `sendMessage`, `editMessageText`.
+
+## Possible causes
+
+- The target private-chat user is marked deleted.
+- Telegram reported that the target account is deactivated.
+
+## Before deciding what to do
+
+**Application decision:** suspend operations for recipient.
+**Repeat request:** after access change.
+
+- Stop repeating this operation for the recipient unless there is evidence that the target or its availability changed.
+
+These are application choices. Errorgram does not retry, suppress the error,
+or change bot state.
+
+## Facts
+
+This condition adds no extracted facts; `result.facts` is empty.
+
+## Example
+
+Synthetic examples derived from the cited source.
+
+API method: `sendMessage`.
+
+```json
+{
+  "ok": false,
+  "error_code": 403,
+  "description": "Forbidden: user is deactivated"
+}
+```
+
+### Python
+
+```python
+from errorgram import classify
+
+response = {
+    "ok": False,
+    "error_code": 403,
+    "description": "Forbidden: user is deactivated",
+}
+result = classify(response, method='sendMessage')
+
+assert result.id == 'user.deactivated'
+print(result.entry["summary"])
+```
+
+### JavaScript and TypeScript
+
+```ts
+import { classify } from "errorgram";
+
+const response = {
+  "ok": false,
+  "error_code": 403,
+  "description": "Forbidden: user is deactivated"
+};
+const result = classify(response, { method: "sendMessage" });
+
+if (result.status === "matched" && result.id === "user.deactivated") {
+  console.log(result.entry.summary);
+}
+```
+
+## Framework names
+
+| Integration | Type or ID |
+| --- | --- |
+| Python | `errorgram.UserDeactivated` |
+| aiogram | `errorgram.aiogram.UserDeactivated` extends `TelegramForbiddenError` |
+| grammY | `EnrichedGrammyError` with `classification.id` equal to `user.deactivated` |
+
+Enrichment is explicit and keeps framework catch compatibility.
+Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
+[JavaScript, TypeScript, and grammY guide](https://errorgram.rmbk.me/javascript/).
+
+## Evidence
+
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:8803–8807](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L8803-L8807). Edit or write access to a deleted private-chat user is rejected directly with code 403. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:124–126](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L124-L126). INPUT\_USER\_DEACTIVATED also maps to this exact 403 response. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+- [Bot API 10.3 · telegram-bot-api/Client.cpp:165–205](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L165-L205). Adds the code-specific prefix and lowercases only the initial character of ordinary messages. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
+
+Source references identify the reviewed revision, not the first release
+that introduced this response.
+
+## Data and versions
+
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
+
+[Markdown](https://errorgram.rmbk.me/errors/user.deactivated.md) · [Condition JSON](https://errorgram.rmbk.me/errors/user.deactivated.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 
 ---
 
@@ -2384,7 +6200,7 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/webhook.certificate_too_large.md) · [Condition JSON](https://errorgram.rmbk.me/errors/webhook.certificate_too_large.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)
 

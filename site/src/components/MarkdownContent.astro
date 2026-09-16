@@ -1,0 +1,9 @@
+---
+import Default from "@astrojs/starlight/components/MarkdownContent.astro";
+import Playground from "./Playground.astro";
+
+const isPlayground = Astro.locals.starlightRoute.id === "playground";
+---
+
+{isPlayground && <Playground />}
+<Default><slot /></Default>

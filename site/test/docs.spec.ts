@@ -12,6 +12,8 @@ async function openSearch(page: Page) {
 }
 
 test("every condition can be found by its stable ID", async ({ page }) => {
+  // Each query includes the search UI debounce; allow the catalogue to grow.
+  test.setTimeout(30_000 + catalogue.entries.length * 1_000);
   const dialog = await openSearch(page);
   for (const entry of catalogue.entries) {
     await dialog.getByRole("textbox", { name: "Search", exact: true }).fill(entry.id);

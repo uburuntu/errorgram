@@ -1,0 +1,67 @@
+{
+  "id": "file.url_content_type_invalid",
+  "category": "file_input",
+  "summary": "The retrieved web content is unsuitable for the requested operation.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: wrong type of the web page content"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendPhoto",
+      "sendDocument"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The retrieved page did not provide usable media for the operation."
+  ],
+  "diagnostic_limits": "The mapping does not identify a required MIME type or prove which part of the retrieved content is unsuitable.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        118,
+        119
+      ],
+      "note": "WEBPAGE_MEDIA_EMPTY is rewritten to this description."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        106
+      ],
+      "note": "The rewrite runs only after the error is normalized to code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendPhoto",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: wrong type of the web page content"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "check_url_content",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Check that the URL serves the intended media and that the selected method accepts that media type."
+    ]
+  }
+}

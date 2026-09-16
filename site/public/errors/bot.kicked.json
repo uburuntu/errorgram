@@ -1,0 +1,67 @@
+{
+  "id": "bot.kicked",
+  "category": "access",
+  "summary": "The bot was removed or banned from the chat.",
+  "match_any": [
+    {
+      "error_code": 403,
+      "description_exact": "Forbidden: bot was kicked from the group chat"
+    },
+    {
+      "error_code": 403,
+      "description_exact": "Forbidden: bot was kicked from the supergroup chat"
+    },
+    {
+      "error_code": 403,
+      "description_exact": "Forbidden: bot was kicked from the channel chat"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "deleteMessage"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "An active group records the bot as kicked.",
+    "The supergroup or channel membership status is banned."
+  ],
+  "diagnostic_limits": "The response does not identify who removed the bot or guarantee that rejoining is currently allowed.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        8832,
+        8833
+      ],
+      "note": "An active group with a kicked bot fails edit or write access."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        8840,
+        8847
+      ],
+      "note": "Banned supergroup and channel memberships produce the corresponding descriptions."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 403,
+      "description": "Forbidden: bot was kicked from the group chat"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "restore_bot_membership",
+    "repeat_request": "after_access_change",
+    "preconditions": [
+      "An authorized chat administrator must restore the bot’s access before the application resumes the operation."
+    ]
+  }
+}

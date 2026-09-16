@@ -1,0 +1,61 @@
+{
+  "id": "file.id_missing",
+  "category": "request_validation",
+  "summary": "The file_id argument is missing or empty.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: file_id not specified"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "getFile"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The remote-file lookup received an empty file_id."
+  ],
+  "diagnostic_limits": "This response concerns a missing file identifier; it does not validate an upload or a nonempty identifier.",
+  "evidence": [
+    {
+      "source": "live-2026-09-16",
+      "note": "getFile with an empty file_id returned this description."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        9034,
+        9041
+      ],
+      "note": "The remote-file helper directly rejects an empty file_id."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        17032,
+        17035
+      ],
+      "note": "getFile passes its file_id argument to the helper."
+    }
+  ],
+  "example": {
+    "method": "getFile",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: file_id not specified"
+    }
+  },
+  "evidence_level": "observed",
+  "guidance": {
+    "action": "supply_file_identifier",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Use the file_id supplied for this bot by Telegram, rather than file_unique_id."
+    ]
+  }
+}

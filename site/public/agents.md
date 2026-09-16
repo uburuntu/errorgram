@@ -18,6 +18,7 @@ Every guide and condition has a plain Markdown version. For example:
 
 ```text
 https://errorgram.rmbk.me/python.md
+https://errorgram.rmbk.me/playground.md
 https://errorgram.rmbk.me/errors/chat.not_found.md
 ```
 
@@ -30,7 +31,7 @@ The website URL for that condition is `https://errorgram.rmbk.me/errors/chat.not
 3. Keep possible causes separate from what the response establishes. Cite the condition page and its pinned evidence.
 4. Preserve unknown or ambiguous results. Leave retries, suppression, and state changes to the application.
 
-The initial catalogue is source-derived and incomplete. Examples are synthetic, and hosted API behavior has not been verified. Transport failures and framework validation errors are outside the inventory.
+Each record links to its source evidence and any live observations. Examples use synthetic data. Coverage is incomplete. Transport failures and framework validation errors are outside the inventory.
 
 `llms.txt` is a discovery convention, not a requirement for clients. All exports are ordinary static files available without JavaScript or authentication.
 

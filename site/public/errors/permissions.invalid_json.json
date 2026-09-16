@@ -1,0 +1,67 @@
+{
+  "id": "permissions.invalid_json",
+  "category": "request_validation",
+  "summary": "The permissions argument is not valid JSON.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: can't parse permissions JSON object"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "setChatPermissions",
+      "restrictChatMember"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The supplied permissions argument failed JSON decoding."
+  ],
+  "diagnostic_limits": "This is a request-format error; it does not establish whether the bot has permission to change chat rights.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        12555,
+        12561
+      ],
+      "note": "An explicitly supplied permissions argument is decoded as JSON and rejected here if decoding fails."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13800,
+        13803
+      ],
+      "note": "Method validation errors are passed to the response normalizer."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "setChatPermissions",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: can't parse permissions JSON object"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "correct_permissions_json",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Serialize permissions as a ChatPermissions object and verify the intended boolean values."
+    ]
+  }
+}

@@ -2,7 +2,7 @@
 
 Canonical page: https://errorgram.rmbk.me/errors/message.not_modified/
 
-**Stable ID:** `message.not_modified` · **Evidence:** source derived
+**Stable ID:** `message.not_modified` · **Evidence:** observed
 
 The requested message content and reply markup are unchanged.
 
@@ -105,6 +105,7 @@ Follow the [Python and aiogram guide](https://errorgram.rmbk.me/python/) or
 
 ## Evidence
 
+- [Recorded observation](https://github.com/uburuntu/errorgram/blob/4314ac1f9d29d105b10e9b537a7643cc65d097aa/observations/2026-09-16.json). Editing a newly created bot message with identical text returned this description. The test message was then deleted. Accessed 2026-09-16.
 - [Bot API 10.3 · telegram-bot-api/Client.cpp:106–113](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L106-L113). MESSAGE\_NOT\_MODIFIED is rewritten here; prefix and initial-case handling are at lines 165-205. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
 
 Source references identify the reviewed revision, not the first release
@@ -112,6 +113,6 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](https://errorgram.rmbk.me/errors/message.not_modified.md) · [Condition JSON](https://errorgram.rmbk.me/errors/message.not_modified.json) · [Full catalogue and sources](https://errorgram.rmbk.me/catalogue.json) · [JSON Schema](https://errorgram.rmbk.me/schema.json)

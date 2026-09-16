@@ -1,0 +1,67 @@
+{
+  "id": "markup.invalid_json",
+  "category": "request_validation",
+  "summary": "The reply_markup argument is not valid JSON.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: can't parse reply keyboard markup JSON object"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "editMessageReplyMarkup"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "A nonempty reply_markup argument failed JSON decoding."
+  ],
+  "diagnostic_limits": "Valid JSON with the wrong shape or invalid button fields produces different errors.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        10504,
+        10518
+      ],
+      "note": "The reply_markup parser emits this literal only when JSON decoding fails."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13800,
+        13803
+      ],
+      "note": "Method validation errors are passed to the response normalizer."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: can't parse reply keyboard markup JSON object"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "correct_reply_markup_json",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Serialize reply_markup as a JSON object with the structure required by the selected keyboard type."
+    ]
+  }
+}

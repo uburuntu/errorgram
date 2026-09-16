@@ -7,7 +7,7 @@ sidebar:
   label: "chat.migrated"
 ---
 
-**Stable ID:** `chat.migrated` · **Evidence:** source derived
+**Stable ID:** `chat.migrated` · **Evidence:** observed
 
 The group has moved to a supergroup with a new ID.
 
@@ -118,6 +118,7 @@ Follow the [Python and aiogram guide](/python/) or
 
 ## Evidence
 
+- [Recorded observation](https://github.com/uburuntu/errorgram/blob/4314ac1f9d29d105b10e9b537a7643cc65d097aa/observations/2026-09-16.json). getChatAdministrators on an already migrated basic group returned the migration parameter. Its value is synthetic in the report. Accessed 2026-09-16.
 - [Bot API 10.3 · telegram-bot-api/Client.cpp:8821–8827](https://github.com/tdlib/telegram-bot-api/blob/e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1/telegram-bot-api/Client.cpp#L8821-L8827). The replacement chat ID is placed in response parameters. Revision `e3e9dd8e5b3d7ab8537cd5a10dc31d5ffa8f82d1`.
 - [Official documentation](https://core.telegram.org/bots/api#responseparameters). Documents migrate\_to\_chat\_id, including its maximum of 52 significant bits. Accessed 2026-09-15.
 
@@ -126,6 +127,6 @@ that introduced this response.
 
 ## Data and versions
 
-Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-15.
+Catalogue `0.1.0` · schema `1.0.0` · reviewed 2026-09-16.
 
 [Markdown](/errors/chat.migrated.md) · [Condition JSON](/errors/chat.migrated.json) · [Full catalogue and sources](/catalogue.json) · [JSON Schema](/schema.json)

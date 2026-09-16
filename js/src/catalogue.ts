@@ -4,11 +4,11 @@ import type { Catalogue, DiagnosticBase, ApiErrorResponse } from "./types.js";
 
 const data = {
   "schema_version": "1.0.0",
-  "reviewed_on": "2026-09-15",
+  "reviewed_on": "2026-09-16",
   "coverage": {
     "complete": false,
     "live_verified": false,
-    "scope": "Telegram Bot API error responses. Source-derived; hosted deployment behavior is unverified.",
+    "scope": "Telegram Bot API error responses, reviewed against source with selected hosted observations. Live verification is incomplete; see each record’s evidence.",
     "examples": "Synthetic examples derived from the cited source."
   },
   "sources": {
@@ -22,6 +22,11 @@ const data = {
       "kind": "official_documentation",
       "url": "https://core.telegram.org/bots/api#responseparameters",
       "accessed_on": "2026-09-15"
+    },
+    "live-2026-09-16": {
+      "kind": "observation",
+      "url": "https://github.com/uburuntu/errorgram/blob/4314ac1f9d29d105b10e9b537a7643cc65d097aa/observations/2026-09-16.json",
+      "accessed_on": "2026-09-16"
     }
   },
   "entries": [
@@ -49,6 +54,10 @@ const data = {
       "diagnostic_limits": "The response does not include the current message or establish the history of concurrent edits.",
       "evidence": [
         {
+          "source": "live-2026-09-16",
+          "note": "Editing a newly created bot message with identical text returned this description. The test message was then deleted."
+        },
+        {
           "source": "server-10.3",
           "path": "telegram-bot-api/Client.cpp",
           "lines": [
@@ -66,7 +75,7 @@ const data = {
           "description": "Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply markup of the message"
         }
       },
-      "evidence_level": "source_derived",
+      "evidence_level": "observed",
       "guidance": {
         "action": "accept_existing_state_if_intended",
         "repeat_request": "unhelpful_without_change",
@@ -256,6 +265,10 @@ const data = {
       "diagnostic_limits": "Use the structured replacement identifier; a description alone does not supply the new target.",
       "evidence": [
         {
+          "source": "live-2026-09-16",
+          "note": "getChatAdministrators on an already migrated basic group returned the migration parameter. Its value is synthetic in the report."
+        },
+        {
           "source": "server-10.3",
           "path": "telegram-bot-api/Client.cpp",
           "lines": [
@@ -280,7 +293,7 @@ const data = {
           }
         }
       },
-      "evidence_level": "source_derived",
+      "evidence_level": "observed",
       "guidance": {
         "action": "migrate_chat_reference",
         "repeat_request": "after_target_update",
@@ -847,6 +860,2184 @@ const data = {
           "Verify that the uploaded file is the intended certificate and satisfies this server revision's limit."
         ]
       }
+    },
+    {
+      "id": "message.edit_not_found",
+      "category": "target_resolution",
+      "summary": "The message to edit could not be resolved.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: message to edit not found"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "editMessageText",
+          "editMessageCaption",
+          "editMessageReplyMarkup"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The message identifier is missing or nonpositive.",
+        "The bot cannot access messages in the chat.",
+        "A message lookup failed and its original error was replaced."
+      ],
+      "diagnostic_limits": "The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error.",
+      "evidence": [
+        {
+          "source": "live-2026-09-16",
+          "note": "Editing the test bot’s own message after confirmed deletion returned this description."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            14694,
+            14700
+          ],
+          "note": "The editMessageText path checks the target as \"message to edit\"."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            9084,
+            9102
+          ],
+          "note": "Missing identifiers and unavailable message access produce this operation-specific fallback."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            7390,
+            7399
+          ],
+          "note": "Failed lookups use the same fallback when an empty result is not allowed."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            108
+          ],
+          "note": "The fallback replaces only errors normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "editMessageText",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: message to edit not found"
+        }
+      },
+      "evidence_level": "observed",
+      "guidance": {
+        "action": "inspect_message_target_and_access",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Check the chat and message identifiers together, then confirm the bot can access the target message."
+        ]
+      }
+    },
+    {
+      "id": "message.delete_not_found",
+      "category": "target_resolution",
+      "summary": "The message to delete could not be resolved.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: message to delete not found"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "deleteMessage",
+          "deleteMessages"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The message identifier is missing or nonpositive.",
+        "The bot cannot access messages in the chat.",
+        "A message lookup failed and its original error was replaced."
+      ],
+      "diagnostic_limits": "The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error. Batch deletion can skip missing messages; this response is not an inventory of deleted items.",
+      "evidence": [
+        {
+          "source": "live-2026-09-16",
+          "note": "Deleting the test bot’s own message again after confirmed deletion returned this description."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            14989,
+            15006
+          ],
+          "note": "Single and batch deletion use \"message to delete\"; the batch path permits missing items."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            9084,
+            9102
+          ],
+          "note": "Missing identifiers and unavailable message access produce this operation-specific fallback."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            7390,
+            7399
+          ],
+          "note": "Failed lookups use the same fallback when an empty result is not allowed."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            108
+          ],
+          "note": "The fallback replaces only errors normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "deleteMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: message to delete not found"
+        }
+      },
+      "evidence_level": "observed",
+      "guidance": {
+        "action": "inspect_message_target_and_access",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Check the chat and message identifiers together, then confirm the bot can access the target message."
+        ]
+      }
+    },
+    {
+      "id": "message.forward_not_found",
+      "category": "target_resolution",
+      "summary": "The message to forward could not be resolved.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: message to forward not found"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "forwardMessage",
+          "forwardMessages"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The message identifier is missing or nonpositive.",
+        "The bot cannot access messages in the chat.",
+        "A message lookup failed and its original error was replaced."
+      ],
+      "diagnostic_limits": "The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            14441,
+            14452
+          ],
+          "note": "The forwardMessage path checks the source as \"message to forward\"."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            9084,
+            9102
+          ],
+          "note": "Missing identifiers and unavailable message access produce this operation-specific fallback."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            7390,
+            7399
+          ],
+          "note": "Failed lookups use the same fallback when an empty result is not allowed."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            108
+          ],
+          "note": "The fallback replaces only errors normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "forwardMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: message to forward not found"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "inspect_message_target_and_access",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Check the chat and message identifiers together, then confirm the bot can access the target message."
+        ]
+      }
+    },
+    {
+      "id": "message.copy_not_found",
+      "category": "target_resolution",
+      "summary": "The message to copy could not be resolved.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: message to copy not found"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "copyMessage"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The message identifier is missing or nonpositive.",
+        "The bot cannot access messages in the chat.",
+        "A message lookup failed and its original error was replaced."
+      ],
+      "diagnostic_limits": "The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            14373,
+            14385
+          ],
+          "note": "The copyMessage path checks the source as \"message to copy\"."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            9084,
+            9102
+          ],
+          "note": "Missing identifiers and unavailable message access produce this operation-specific fallback."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            7390,
+            7399
+          ],
+          "note": "Failed lookups use the same fallback when an empty result is not allowed."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            108
+          ],
+          "note": "The fallback replaces only errors normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "copyMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: message to copy not found"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "inspect_message_target_and_access",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Check the chat and message identifiers together, then confirm the bot can access the target message."
+        ]
+      }
+    },
+    {
+      "id": "message.pin_not_found",
+      "category": "target_resolution",
+      "summary": "The message to pin could not be resolved.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: message to pin not found"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "pinChatMessage"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The message identifier is missing or nonpositive.",
+        "The bot cannot access messages in the chat.",
+        "A message lookup failed and its original error was replaced."
+      ],
+      "diagnostic_limits": "The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            16054,
+            16065
+          ],
+          "note": "The pinChatMessage path checks the target as \"message to pin\"."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            9084,
+            9102
+          ],
+          "note": "Missing identifiers and unavailable message access produce this operation-specific fallback."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            7390,
+            7399
+          ],
+          "note": "Failed lookups use the same fallback when an empty result is not allowed."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            108
+          ],
+          "note": "The fallback replaces only errors normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "pinChatMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: message to pin not found"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "inspect_message_target_and_access",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Check the chat and message identifiers together, then confirm the bot can access the target message."
+        ]
+      }
+    },
+    {
+      "id": "message.reply_not_found",
+      "category": "target_resolution",
+      "summary": "The message being replied to could not be resolved.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: message to be replied not found"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "sendPhoto"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The bot cannot access the referenced message.",
+        "A reply-message lookup failed and its original error was replaced."
+      ],
+      "diagnostic_limits": "The response does not prove that the message was deleted. Reply settings and the referenced chat also affect this lookup.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            9190,
+            9198
+          ],
+          "note": "Reply lookup uses this fallback for unavailable access or a failed required-message lookup."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            7390,
+            7399
+          ],
+          "note": "allow_sending_without_reply can permit an empty result instead of failing."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            108
+          ],
+          "note": "The fallback replaces only errors normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: message to be replied not found"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "inspect_reply_target_and_access",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Verify the reply message and chat; omit the reply only if the application permits sending without it."
+        ]
+      }
+    },
+    {
+      "id": "message.identifier_missing",
+      "category": "request_validation",
+      "summary": "The request did not specify a message identifier for the selected operation.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: message identifier is not specified"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "editMessageText",
+          "editMessageCaption"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The inline-message path was selected without a nonempty inline_message_id."
+      ],
+      "diagnostic_limits": "This signature does not diagnose all missing message_id arguments; a chat-based lookup may return an operation-specific not-found error.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13540,
+            13545
+          ],
+          "note": "The inline-message identifier helper rejects an empty argument."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            14659,
+            14665
+          ],
+          "note": "Editing takes this path when chat_id is empty and the parsed message_id is zero."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "editMessageText",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: message identifier is not specified"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "supply_message_target",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Supply the intended inline_message_id or the appropriate chat_id and message_id pair."
+        ]
+      }
+    },
+    {
+      "id": "message.identifiers_missing",
+      "category": "request_validation",
+      "summary": "The request did not specify the list of message identifiers.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: message identifiers are not specified"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "deleteMessages",
+          "forwardMessages",
+          "copyMessages"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The message_ids argument is absent or empty."
+      ],
+      "diagnostic_limits": "An empty argument and an encoded empty JSON array are different inputs; this response covers the former.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13500,
+            13504
+          ],
+          "note": "The list parser rejects an absent or empty argument before JSON decoding."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            15000,
+            15003
+          ],
+          "note": "deleteMessages passes message_ids to this parser."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "deleteMessages",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: message identifiers are not specified"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "supply_message_identifiers",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Provide a JSON array of the intended message identifiers and check the method-specific count limit."
+        ]
+      }
+    },
+    {
+      "id": "text.empty",
+      "category": "request_validation",
+      "summary": "The message text is empty.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: message text is empty"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "editMessageText"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The text argument is absent or empty."
+      ],
+      "diagnostic_limits": "This validates the message text input; it does not establish a rule for optional media captions.",
+      "evidence": [
+        {
+          "source": "live-2026-09-16",
+          "note": "sendMessage with empty text returned this description."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            12039,
+            12052
+          ],
+          "note": "Text-message construction rejects empty text before formatting."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13981,
+            13993
+          ],
+          "note": "sendMessage constructs its text with this helper."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: message text is empty"
+        }
+      },
+      "evidence_level": "observed",
+      "guidance": {
+        "action": "supply_message_text",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Provide nonempty text appropriate for the selected method."
+        ]
+      }
+    },
+    {
+      "id": "text.too_long",
+      "category": "request_validation",
+      "summary": "The text exceeds the limit checked by this response path.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: text is too long"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "editMessageText",
+          "sendPhoto"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "Text supplied to the formatting helper exceeds its local byte-size guard."
+      ],
+      "diagnostic_limits": "The local guard is not the public character limit for every method. Other message and caption limits can produce different descriptions.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            11955,
+            11958
+          ],
+          "note": "The formatting helper rejects text.size() greater than 32768 before parsing."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: text is too long"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "shorten_text_for_method",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Check the selected method’s text or caption limits and preserve valid formatting when shortening or splitting text."
+        ]
+      }
+    },
+    {
+      "id": "format.parse_mode_unsupported",
+      "category": "formatting",
+      "summary": "The requested parse_mode is unsupported.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: unsupported parse_mode"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "editMessageText",
+          "sendPhoto"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "Nonempty text was supplied with a parse_mode that the server does not recognize."
+      ],
+      "diagnostic_limits": "The server lowercases parse_mode before checking it. This response does not identify a malformed entity inside a supported mode.",
+      "evidence": [
+        {
+          "source": "live-2026-09-16",
+          "note": "sendMessage with an unsupported parse_mode returned this description."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            11961,
+            11977
+          ],
+          "note": "Nonempty text accepts markdown, markdownv2, html, or the no-parsing path; other modes fail."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: unsupported parse_mode"
+        }
+      },
+      "evidence_level": "observed",
+      "guidance": {
+        "action": "correct_parse_mode",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Choose a supported parse_mode, or omit it and use plain text or explicit entities."
+        ]
+      }
+    },
+    {
+      "id": "format.entity_not_object",
+      "category": "formatting",
+      "summary": "An item in the message entities array is not a JSON object.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: can't parse MessageEntity: expected an Object"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "editMessageText",
+          "sendPhoto"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "An entities or caption_entities array contains a non-object item."
+      ],
+      "diagnostic_limits": "This identifies an item-shape failure, not invalid offsets, lengths, or markup syntax.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            11938,
+            11946
+          ],
+          "note": "Entity parsing rejects a non-object item before reading its fields."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            11984,
+            11989
+          ],
+          "note": "The formatting helper wraps the item error in the MessageEntity description with code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: can't parse MessageEntity: expected an Object"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "correct_entity_objects",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Provide each entity as an object with the fields required by its type, using the API’s UTF-16 offset convention."
+        ]
+      }
+    },
+    {
+      "id": "format.entity_type_unsupported",
+      "category": "formatting",
+      "summary": "A message entity specifies an unsupported type.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: can't parse MessageEntity: Unsupported type specified"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "editMessageText",
+          "sendPhoto"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "An entity object uses a type that the server’s entity parser does not support."
+      ],
+      "diagnostic_limits": "The response does not identify the offending array item or establish whether its other fields are valid.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            11929,
+            11946
+          ],
+          "note": "Unrecognized entity types return this literal, which propagates through get_text_entity."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            11984,
+            11989
+          ],
+          "note": "The formatting helper wraps the item error with an explicit 400 code and preserves its initial capital."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: can't parse MessageEntity: Unsupported type specified"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "correct_entity_type",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Use a supported MessageEntity type and include its required fields."
+        ]
+      }
+    },
+    {
+      "id": "markup.invalid_json",
+      "category": "request_validation",
+      "summary": "The reply_markup argument is not valid JSON.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: can't parse reply keyboard markup JSON object"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "editMessageReplyMarkup"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "A nonempty reply_markup argument failed JSON decoding."
+      ],
+      "diagnostic_limits": "Valid JSON with the wrong shape or invalid button fields produces different errors.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            10504,
+            10518
+          ],
+          "note": "The reply_markup parser emits this literal only when JSON decoding fails."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: can't parse reply keyboard markup JSON object"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "correct_reply_markup_json",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Serialize reply_markup as a JSON object with the structure required by the selected keyboard type."
+        ]
+      }
+    },
+    {
+      "id": "markup.not_object",
+      "category": "request_validation",
+      "summary": "The reply_markup value is not a JSON object.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: object expected as reply markup"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "editMessageReplyMarkup"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "reply_markup decoded successfully but its top-level value is not an object."
+      ],
+      "diagnostic_limits": "This response does not validate the contents of an otherwise well-formed keyboard object.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            10521,
+            10525
+          ],
+          "note": "The decoded reply markup must have object type."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: object expected as reply markup"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "correct_reply_markup_shape",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Use a reply_markup object instead of a top-level array, scalar, or null value."
+        ]
+      }
+    },
+    {
+      "id": "markup.too_long",
+      "category": "request_validation",
+      "summary": "Telegram rejected the size of the reply markup.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: reply markup is too long"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "editMessageReplyMarkup"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The reply markup exceeds a size constraint enforced by Telegram."
+      ],
+      "diagnostic_limits": "The mapping does not specify a size limit or identify which keyboard field exceeds it.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            121,
+            123
+          ],
+          "note": "REPLY_MARKUP_TOO_LONG becomes this description in the code-400 branch."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            106
+          ],
+          "note": "Normalizes lower codes, 404, and uppercase machine-style 403 errors to 400 before rewriting."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: reply markup is too long"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "reduce_reply_markup",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Reduce the keyboard or button payload and check the current limits for the chosen button types."
+        ]
+      }
+    },
+    {
+      "id": "file.id_missing",
+      "category": "request_validation",
+      "summary": "The file_id argument is missing or empty.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: file_id not specified"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "getFile"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The remote-file lookup received an empty file_id."
+      ],
+      "diagnostic_limits": "This response concerns a missing file identifier; it does not validate an upload or a nonempty identifier.",
+      "evidence": [
+        {
+          "source": "live-2026-09-16",
+          "note": "getFile with an empty file_id returned this description."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            9034,
+            9041
+          ],
+          "note": "The remote-file helper directly rejects an empty file_id."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            17032,
+            17035
+          ],
+          "note": "getFile passes its file_id argument to the helper."
+        }
+      ],
+      "example": {
+        "method": "getFile",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: file_id not specified"
+        }
+      },
+      "evidence_level": "observed",
+      "guidance": {
+        "action": "supply_file_identifier",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Use the file_id supplied for this bot by Telegram, rather than file_unique_id."
+        ]
+      }
+    },
+    {
+      "id": "file.id_invalid",
+      "category": "target_resolution",
+      "summary": "The server could not resolve the supplied file_id.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: invalid file_id"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "getFile"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "A remote-file lookup failed and the normalizer replaced its original error."
+      ],
+      "diagnostic_limits": "The generic fallback does not identify a malformed ID, a bot-specific access issue, or permanent unavailability.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            7525,
+            7527
+          ],
+          "note": "Remote-file lookup errors receive the invalid file_id fallback."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            108
+          ],
+          "note": "The fallback replaces only errors normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            17032,
+            17035
+          ],
+          "note": "getFile uses this remote-file lookup."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "getFile",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: invalid file_id"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "verify_file_identifier",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Check that this bot received the exact file_id and that file_unique_id was not substituted."
+        ]
+      }
+    },
+    {
+      "id": "file.unavailable",
+      "category": "download_state",
+      "summary": "The file could not be downloaded with the supplied identifier.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: wrong file_id or the file is temporarily unavailable"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "getFile"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "A started download stopped before completion without an active shutdown or logout state."
+      ],
+      "diagnostic_limits": "The source notes that this path also hides upstream 5xx and 429 errors. The response supplies no retry delay and does not prove that the ID is wrong.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            9385,
+            9396
+          ],
+          "note": "An inactive, incomplete started download is converted to this generic 400 response."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            17056,
+            17067
+          ],
+          "note": "The download failure is forwarded to waiting getFile queries through the normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "getFile",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: wrong file_id or the file is temporarily unavailable"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "check_file_and_retry_policy",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Verify the file_id; if a temporary failure is plausible, apply a bounded retry policy without inventing a server delay."
+        ]
+      }
+    },
+    {
+      "id": "file.url_invalid",
+      "category": "file_input",
+      "summary": "The HTTP URL was rejected.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: wrong HTTP URL specified"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendPhoto",
+          "sendDocument"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The supplied external URL failed Telegram’s URL validation."
+      ],
+      "diagnostic_limits": "The response does not identify the invalid URL component or establish whether the resource is reachable.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            114,
+            115
+          ],
+          "note": "Two upstream URL validation errors are rewritten to the same description."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            106
+          ],
+          "note": "The rewrite runs only after the error is normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendPhoto",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: wrong HTTP URL specified"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "correct_file_url",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Provide a valid HTTP URL for the intended resource and check the selected method’s URL-input rules."
+        ]
+      }
+    },
+    {
+      "id": "file.url_fetch_failed",
+      "category": "file_input",
+      "summary": "Telegram could not retrieve content from the HTTP URL.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: failed to get HTTP URL content"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendPhoto",
+          "sendDocument"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "Retrieving content from the URL failed."
+      ],
+      "diagnostic_limits": "The response does not distinguish DNS, network, TLS, HTTP, or origin-access failures.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            116,
+            117
+          ],
+          "note": "WEBPAGE_CURL_FAILED is rewritten to this description."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            106
+          ],
+          "note": "The rewrite runs only after the error is normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendPhoto",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: failed to get HTTP URL content"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "inspect_url_retrieval",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Check that Telegram can retrieve the resource without browser sessions or private-network access; retry only under a bounded policy."
+        ]
+      }
+    },
+    {
+      "id": "file.url_content_type_invalid",
+      "category": "file_input",
+      "summary": "The retrieved web content is unsuitable for the requested operation.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: wrong type of the web page content"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendPhoto",
+          "sendDocument"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The retrieved page did not provide usable media for the operation."
+      ],
+      "diagnostic_limits": "The mapping does not identify a required MIME type or prove which part of the retrieved content is unsuitable.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            118,
+            119
+          ],
+          "note": "WEBPAGE_MEDIA_EMPTY is rewritten to this description."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            106
+          ],
+          "note": "The rewrite runs only after the error is normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendPhoto",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: wrong type of the web page content"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "check_url_content",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Check that the URL serves the intended media and that the selected method accepts that media type."
+        ]
+      }
+    },
+    {
+      "id": "file.url_upload_failed",
+      "category": "file_input",
+      "summary": "Telegram could not upload the file from its URL.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: can't upload file by URL"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendPhoto",
+          "sendDocument"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "Generating a file from the supplied URL failed."
+      ],
+      "diagnostic_limits": "The response mapping does not identify the original retrieval or file-generation failure.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            133,
+            135
+          ],
+          "note": "File generation failed is rewritten to this description and code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            106
+          ],
+          "note": "The rewrite runs only after the error is normalized to code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendPhoto",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: can't upload file by URL"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "inspect_url_file_input",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Check the URL and file requirements; use a direct upload if the method supports it and the application can supply the file."
+        ]
+      }
+    },
+    {
+      "id": "user.deactivated",
+      "category": "access",
+      "summary": "Telegram rejected the operation because the user is deactivated.",
+      "match_any": [
+        {
+          "error_code": 403,
+          "description_exact": "Forbidden: user is deactivated"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "editMessageText"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The target private-chat user is marked deleted.",
+        "Telegram reported that the target account is deactivated."
+      ],
+      "diagnostic_limits": "The response establishes the current rejection; it does not expose account history or a replacement recipient.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            8803,
+            8807
+          ],
+          "note": "Edit or write access to a deleted private-chat user is rejected directly with code 403."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            124,
+            126
+          ],
+          "note": "INPUT_USER_DEACTIVATED also maps to this exact 403 response."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 403,
+          "description": "Forbidden: user is deactivated"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "suspend_operations_for_recipient",
+        "repeat_request": "after_access_change",
+        "preconditions": [
+          "Stop repeating this operation for the recipient unless there is evidence that the target or its availability changed."
+        ]
+      }
+    },
+    {
+      "id": "bot.kicked",
+      "category": "access",
+      "summary": "The bot was removed or banned from the chat.",
+      "match_any": [
+        {
+          "error_code": 403,
+          "description_exact": "Forbidden: bot was kicked from the group chat"
+        },
+        {
+          "error_code": 403,
+          "description_exact": "Forbidden: bot was kicked from the supergroup chat"
+        },
+        {
+          "error_code": 403,
+          "description_exact": "Forbidden: bot was kicked from the channel chat"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "deleteMessage"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "An active group records the bot as kicked.",
+        "The supergroup or channel membership status is banned."
+      ],
+      "diagnostic_limits": "The response does not identify who removed the bot or guarantee that rejoining is currently allowed.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            8832,
+            8833
+          ],
+          "note": "An active group with a kicked bot fails edit or write access."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            8840,
+            8847
+          ],
+          "note": "Banned supergroup and channel memberships produce the corresponding descriptions."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 403,
+          "description": "Forbidden: bot was kicked from the group chat"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "restore_bot_membership",
+        "repeat_request": "after_access_change",
+        "preconditions": [
+          "An authorized chat administrator must restore the bot’s access before the application resumes the operation."
+        ]
+      }
+    },
+    {
+      "id": "bot.not_member",
+      "category": "access",
+      "summary": "The bot lacks the chat membership required for this operation.",
+      "match_any": [
+        {
+          "error_code": 403,
+          "description_exact": "Forbidden: bot is not a member of the group chat"
+        },
+        {
+          "error_code": 403,
+          "description_exact": "Forbidden: bot is not a member of the supergroup chat"
+        },
+        {
+          "error_code": 403,
+          "description_exact": "Forbidden: bot is not a member of the channel chat"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "deleteMessage"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The bot has left an active group.",
+        "The bot is not a member of a supergroup or channel and the requested access requires membership."
+      ],
+      "diagnostic_limits": "Membership requirements depend on the chat type, public access, and operation. This is separate from the explicit kicked response.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            8835,
+            8836
+          ],
+          "note": "An active group with a departed bot fails edit or write access."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            8850,
+            8856
+          ],
+          "note": "Public visibility and requested access determine whether supergroup or channel membership is required."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            9045,
+            9055
+          ],
+          "note": "Banned, left, and restricted nonmember statuses do not count as membership."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 403,
+          "description": "Forbidden: bot is not a member of the group chat"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "restore_bot_membership",
+        "repeat_request": "after_access_change",
+        "preconditions": [
+          "Add or rejoin the bot with the required access through an authorized chat administrator before resuming."
+        ]
+      }
+    },
+    {
+      "id": "chat.group_deleted",
+      "category": "access",
+      "summary": "Telegram reports that the group chat was deleted.",
+      "match_any": [
+        {
+          "error_code": 403,
+          "description_exact": "Forbidden: the group chat was deleted"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "sendMessage",
+          "getChatAdministrators"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The basic group is inactive and has no recorded supergroup replacement in this access check."
+      ],
+      "diagnostic_limits": "This signature is distinct from group migration and does not supply a replacement chat identifier.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            8814,
+            8829
+          ],
+          "note": "The inactive-group branch distinguishes a recorded migration from the deleted-group response."
+        }
+      ],
+      "example": {
+        "method": "sendMessage",
+        "response": {
+          "ok": false,
+          "error_code": 403,
+          "description": "Forbidden: the group chat was deleted"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "retire_or_review_chat_target",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Review the stored target and stop repeated sends; use a replacement only when it is independently established."
+        ]
+      }
+    },
+    {
+      "id": "member.is_administrator",
+      "category": "operation_not_allowed",
+      "summary": "The operation was rejected because the target user is a chat administrator.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: user is an administrator of the chat"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "banChatMember",
+          "restrictChatMember"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The requested action targets a chat administrator."
+      ],
+      "diagnostic_limits": "The mapping does not identify the user’s exact administrative role or authorize changing it.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            130,
+            132
+          ],
+          "note": "USER_ADMIN_INVALID becomes this description with code 400."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            85,
+            106
+          ],
+          "note": "Uppercase machine-style 403 errors can become 400 before this rewrite."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "banChatMember",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: user is an administrator of the chat"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "review_target_member_role",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Confirm the intended user and current role; any necessary role change must follow the chat’s authorization policy."
+        ]
+      }
+    },
+    {
+      "id": "permissions.invalid_json",
+      "category": "request_validation",
+      "summary": "The permissions argument is not valid JSON.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: can't parse permissions JSON object"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "setChatPermissions",
+          "restrictChatMember"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The supplied permissions argument failed JSON decoding."
+      ],
+      "diagnostic_limits": "This is a request-format error; it does not establish whether the bot has permission to change chat rights.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            12555,
+            12561
+          ],
+          "note": "An explicitly supplied permissions argument is decoded as JSON and rejected here if decoding fails."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "setChatPermissions",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: can't parse permissions JSON object"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "correct_permissions_json",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Serialize permissions as a ChatPermissions object and verify the intended boolean values."
+        ]
+      }
+    },
+    {
+      "id": "permissions.not_object",
+      "category": "request_validation",
+      "summary": "The permissions value is not a JSON object.",
+      "match_any": [
+        {
+          "error_code": 400,
+          "description_exact": "Bad Request: object expected as permissions"
+        }
+      ],
+      "scope": {
+        "method_examples": [
+          "setChatPermissions",
+          "restrictChatMember"
+        ],
+        "exhaustive": false
+      },
+      "possible_causes": [
+        "The permissions argument decoded to an array, scalar, or null instead of an object."
+      ],
+      "diagnostic_limits": "This validates only the top-level shape, not individual rights or the bot’s authority to change them.",
+      "evidence": [
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            12564,
+            12566
+          ],
+          "note": "Decoded permissions must have object type."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            13800,
+            13803
+          ],
+          "note": "Method validation errors are passed to the response normalizer."
+        },
+        {
+          "source": "server-10.3",
+          "path": "telegram-bot-api/Client.cpp",
+          "lines": [
+            165,
+            205
+          ],
+          "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+        }
+      ],
+      "example": {
+        "method": "setChatPermissions",
+        "response": {
+          "ok": false,
+          "error_code": 400,
+          "description": "Bad Request: object expected as permissions"
+        }
+      },
+      "evidence_level": "source_derived",
+      "guidance": {
+        "action": "correct_permissions_shape",
+        "repeat_request": "after_relevant_change",
+        "preconditions": [
+          "Provide a ChatPermissions object with the intended rights, then check the operation’s access requirements."
+        ]
+      }
     }
   ],
   "catalogue_version": "0.1.0",
@@ -883,6 +3074,36 @@ export interface FactsById {
   "routing.token_not_served": {  };
   "session.logged_out": {  };
   "webhook.certificate_too_large": { readonly "size_bytes": number; };
+  "message.edit_not_found": {  };
+  "message.delete_not_found": {  };
+  "message.forward_not_found": {  };
+  "message.copy_not_found": {  };
+  "message.pin_not_found": {  };
+  "message.reply_not_found": {  };
+  "message.identifier_missing": {  };
+  "message.identifiers_missing": {  };
+  "text.empty": {  };
+  "text.too_long": {  };
+  "format.parse_mode_unsupported": {  };
+  "format.entity_not_object": {  };
+  "format.entity_type_unsupported": {  };
+  "markup.invalid_json": {  };
+  "markup.not_object": {  };
+  "markup.too_long": {  };
+  "file.id_missing": {  };
+  "file.id_invalid": {  };
+  "file.unavailable": {  };
+  "file.url_invalid": {  };
+  "file.url_fetch_failed": {  };
+  "file.url_content_type_invalid": {  };
+  "file.url_upload_failed": {  };
+  "user.deactivated": {  };
+  "bot.kicked": {  };
+  "bot.not_member": {  };
+  "chat.group_deleted": {  };
+  "member.is_administrator": {  };
+  "permissions.invalid_json": {  };
+  "permissions.not_object": {  };
 }
 
 export type MatchedClassification = {

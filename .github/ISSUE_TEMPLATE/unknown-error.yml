@@ -1,0 +1,52 @@
+name: Unknown Bot API error
+description: Share a sanitized response that Errorgram does not classify.
+title: "Unknown error: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is a public issue. Remove bot tokens, token-bearing URLs, chat and user identifiers, and private message content. Preserve error_code, description, and relevant parameter names and types when sanitizing.
+
+        The playground does not send or prefill your input here. Share only a minimal example you have reviewed.
+  - type: textarea
+    id: response
+    attributes:
+      label: Sanitized API response
+      description: Paste only the minimal JSON response body. Mark any values you replaced in the context below.
+      render: json
+    validations:
+      required: true
+  - type: input
+    id: method
+    attributes:
+      label: API method
+      description: The method called, if known. Do not include a request URL or token.
+      placeholder: e.g. sendMessage
+  - type: input
+    id: versions
+    attributes:
+      label: Errorgram and framework versions
+      description: Include the catalogue version shown in the result and any SDK or framework version you use.
+  - type: dropdown
+    id: evidence
+    attributes:
+      label: Example source
+      options:
+        - Live Telegram hosted API observation
+        - Live local Bot API server observation
+        - Synthetic example derived from source or documentation
+        - Other or not known
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context and evidence
+      description: Describe minimal reproduction steps, expected handling, any redactions, and public source or documentation links. Separate what you observed from possible causes.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Public sharing check
+      options:
+        - label: I reviewed this report and removed credentials, private identifiers, and private content.
+          required: true

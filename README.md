@@ -4,7 +4,7 @@ One `BadRequest` can mean an unchanged message, a missing chat, or a request tha
 
 Errorgram gives Telegram Bot API errors stable IDs, useful context, and typed bindings. One JSON catalogue powers Python, JavaScript, TypeScript, aiogram, and grammY.
 
-[Read the docs](https://errorgram.rmbk.me/) · [Find an error](https://errorgram.rmbk.me/catalogue/) · [For AI agents](https://errorgram.rmbk.me/agents/)
+[Read the docs](https://errorgram.rmbk.me/) · [Find an error](https://errorgram.rmbk.me/catalogue/) · [Try a response](https://errorgram.rmbk.me/playground/) · [For AI agents](https://errorgram.rmbk.me/agents/)
 
 ```python
 from errorgram import classify
@@ -43,7 +43,7 @@ if (failure.status === "matched" && failure.id === "chat.not_found") {
 
 Your application decides what to do next. Errorgram classifies errors; existing handlers keep control of retries, delivery, and state changes.
 
-The first catalogue covers **15 conditions** from Bot API **10.3**. Its examples are synthetic and source-derived. Coverage is incomplete, and source evidence does not establish live hosted behavior. Transport failures and framework validation errors are outside this catalogue.
+The catalogue covers **45 conditions**, reviewed against Bot API **10.3**. Each record links to its evidence; examples use synthetic data. [Coverage notes](docs/coverage.md) explain the limits. Transport failures and framework validation errors are outside this catalogue.
 
 ## Try it
 
@@ -58,6 +58,8 @@ make build
 ```
 
 Builds produce a Python wheel, a source distribution, and an npm tarball in `dist/`. Registry publication is a separate step.
+
+The [release guide](docs/releasing.md) covers artifact checks and trusted publishing to PyPI and npm.
 
 See the [Python and aiogram guide](docs/python.md), [JavaScript and grammY guide](docs/javascript.md), and [catalogue](docs/catalogue.md).
 
@@ -84,5 +86,7 @@ make check
 ```
 
 The [update guide](docs/updating.md) explains how to scan a newer Telegram revision and review the differences. Source changes nominate candidates for review; the catalogue records the conditions we can support with evidence.
+
+A monthly workflow prepares the source review. Optional [live checks](docs/live-checks.md) record selected hosted responses using a dedicated test bot. The [discovery guide](docs/discovery.md) covers search-engine submission.
 
 [Matching rules](docs/design.md) · [Contributing](CONTRIBUTING.md) · [MIT license](LICENSE)

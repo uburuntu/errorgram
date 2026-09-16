@@ -8,6 +8,7 @@ import json
 import re
 import sys
 import xml.etree.ElementTree as ET
+from html import unescape
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urljoin, urlsplit
@@ -128,9 +129,14 @@ def markdown_links(text: str) -> list[tuple[str, bool]]:
     return [(url, True) for url in re.findall(r"\[[^\]\n]*\]\(([^\s)]+)\)", text)]
 
 
+def markdown_literals(text: str) -> str:
+    """Decode literal text escaped for safe Markdown publication."""
+    return unescape(re.sub(r"\\([\\`*_\[\]#!|])", r"\1", text))
+
+
 def evidence_url(item: dict, sources: dict) -> str:
     source = sources[item["source"]]
-    if source["kind"] == "official_documentation":
+    if source["kind"] in {"official_documentation", "observation"}:
         return source["url"]
     start, end = item["lines"]
     return (
@@ -226,7 +232,7 @@ def check_site(
             require(bool(alternatives & hrefs), f"Missing evidence link: {identifier}")
         require(url in locations, f"Sitemap omits condition: {identifier}")
         require(identifier in llms and identifier in full, f"AI exports omit: {identifier}")
-        require(entry["summary"] in full and descriptions[0] in full,
+        require(entry["summary"] in markdown_literals(full) and descriptions[0] in full,
                 f"Full AI documentation omits condition content: {identifier}")
         for suffix in ("/", ".md"):
             require(f"{site_url}/{relative}{suffix}" in llms_urls,
@@ -234,7 +240,7 @@ def check_site(
         require(f"{site_url}/{relative}.md" in hrefs,
                 f"Condition page does not link its Markdown: {identifier}")
         markdown = read(relative + ".md")
-        require(identifier in markdown and entry["summary"] in markdown
+        require(identifier in markdown and entry["summary"] in markdown_literals(markdown)
                 and descriptions[0] in markdown,
                 f"Incomplete Markdown export: {identifier}")
         require(json.loads(read(relative + ".json")) == entry,

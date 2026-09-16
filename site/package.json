@@ -9,6 +9,7 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "check": "tsc --noEmit",
     "build": "astro build",
     "preview": "astro preview",
     "test:e2e": "playwright test"
@@ -19,6 +20,7 @@
     "astro": "7.3.2"
   },
   "devDependencies": {
-    "@playwright/test": "1.63.0"
+    "@playwright/test": "1.63.0",
+    "typescript": "7.0.2"
   }
 }

@@ -1,0 +1,66 @@
+{
+  "id": "file.unavailable",
+  "category": "download_state",
+  "summary": "The file could not be downloaded with the supplied identifier.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: wrong file_id or the file is temporarily unavailable"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "getFile"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "A started download stopped before completion without an active shutdown or logout state."
+  ],
+  "diagnostic_limits": "The source notes that this path also hides upstream 5xx and 429 errors. The response supplies no retry delay and does not prove that the ID is wrong.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        9385,
+        9396
+      ],
+      "note": "An inactive, incomplete started download is converted to this generic 400 response."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        17056,
+        17067
+      ],
+      "note": "The download failure is forwarded to waiting getFile queries through the normalizer."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "getFile",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: wrong file_id or the file is temporarily unavailable"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "check_file_and_retry_policy",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Verify the file_id; if a temporary failure is plausible, apply a bounded retry policy without inventing a server delay."
+    ]
+  }
+}

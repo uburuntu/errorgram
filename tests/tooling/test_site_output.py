@@ -146,6 +146,23 @@ def test_full_ai_export_needs_content_beyond_an_index(built_site):
         check_site(*built_site)
 
 
+def test_safely_escaped_markdown_summary_keeps_its_meaning(built_site):
+    dist, catalogue, schema = built_site
+    entry = catalogue["entries"][0]
+    old_summary = entry["summary"]
+    entry["summary"] = "The parse_mode value & formatting were rejected."
+    identifier = entry["id"]
+    (dist / "catalogue.json").write_text(json.dumps(catalogue))
+    (dist / f"errors/{identifier}.json").write_text(json.dumps(entry))
+    page = dist / f"errors/{identifier}/index.html"
+    page.write_text(page.read_text().replace(old_summary, html.escape(entry["summary"])))
+    for path in (dist / "llms-full.txt", dist / f"errors/{identifier}.md"):
+        path.write_text(path.read_text().replace(
+            old_summary, r"The parse\_mode value &amp; formatting were rejected."
+        ))
+    assert check_site(dist, catalogue, schema) == (2, 2)
+
+
 def test_new_condition_requires_a_dedicated_page(built_site):
     dist, catalogue, schema = built_site
     catalogue = copy.deepcopy(catalogue)

@@ -1,0 +1,91 @@
+{
+  "id": "message.delete_not_found",
+  "category": "target_resolution",
+  "summary": "The message to delete could not be resolved.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: message to delete not found"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "deleteMessage",
+      "deleteMessages"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The message identifier is missing or nonpositive.",
+    "The bot cannot access messages in the chat.",
+    "A message lookup failed and its original error was replaced."
+  ],
+  "diagnostic_limits": "The response does not distinguish a deleted message from an incorrect identifier, missing access or a masked lookup error. Batch deletion can skip missing messages; this response is not an inventory of deleted items.",
+  "evidence": [
+    {
+      "source": "live-2026-09-16",
+      "note": "Deleting the test bot’s own message again after confirmed deletion returned this description."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        14989,
+        15006
+      ],
+      "note": "Single and batch deletion use \"message to delete\"; the batch path permits missing items."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        9084,
+        9102
+      ],
+      "note": "Missing identifiers and unavailable message access produce this operation-specific fallback."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        7390,
+        7399
+      ],
+      "note": "Failed lookups use the same fallback when an empty result is not allowed."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        108
+      ],
+      "note": "The fallback replaces only errors normalized to code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "deleteMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: message to delete not found"
+    }
+  },
+  "evidence_level": "observed",
+  "guidance": {
+    "action": "inspect_message_target_and_access",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Check the chat and message identifiers together, then confirm the bot can access the target message."
+    ]
+  }
+}

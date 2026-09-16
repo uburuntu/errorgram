@@ -1,0 +1,67 @@
+{
+  "id": "markup.not_object",
+  "category": "request_validation",
+  "summary": "The reply_markup value is not a JSON object.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: object expected as reply markup"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "editMessageReplyMarkup"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "reply_markup decoded successfully but its top-level value is not an object."
+  ],
+  "diagnostic_limits": "This response does not validate the contents of an otherwise well-formed keyboard object.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        10521,
+        10525
+      ],
+      "note": "The decoded reply markup must have object type."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13800,
+        13803
+      ],
+      "note": "Method validation errors are passed to the response normalizer."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: object expected as reply markup"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "correct_reply_markup_shape",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Use a reply_markup object instead of a top-level array, scalar, or null value."
+    ]
+  }
+}

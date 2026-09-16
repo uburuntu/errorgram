@@ -18,28 +18,43 @@ from aiogram.exceptions import (
 )
 from aiogram.methods import (
     AnswerCallbackQuery,
+    BanChatMember,
+    CopyMessage,
     DeleteMessage,
+    DeleteMessages,
     EditMessageText,
+    ForwardMessage,
     GetChat,
     GetFile,
     GetMe,
     GetUpdates,
+    PinChatMessage,
     SendMessage,
+    SendPhoto,
+    SetChatPermissions,
     SetWebhook,
 )
+from aiogram.types import ChatPermissions
 from errorgram.aiogram import EnrichedError, MessageNotModified, enrich
 from errorgram.aiogram._errors import EXCEPTION_TYPES
 
 CATALOGUE = json.loads((Path(__file__).resolve().parents[2] / "catalogue/errors.json").read_text())
 METHODS = {
     "answerCallbackQuery": AnswerCallbackQuery(callback_query_id="example"),
+    "banChatMember": BanChatMember(chat_id=42, user_id=123),
+    "copyMessage": CopyMessage(chat_id=42, from_chat_id=43, message_id=7),
     "deleteMessage": DeleteMessage(chat_id=42, message_id=7),
+    "deleteMessages": DeleteMessages(chat_id=42, message_ids=[7]),
     "editMessageText": EditMessageText(text="Hello", chat_id=42, message_id=7),
+    "forwardMessage": ForwardMessage(chat_id=42, from_chat_id=43, message_id=7),
     "getChat": GetChat(chat_id=42),
     "getFile": GetFile(file_id="example"),
     "getMe": GetMe(),
     "getUpdates": GetUpdates(),
+    "pinChatMessage": PinChatMessage(chat_id=42, message_id=7),
     "sendMessage": SendMessage(chat_id=42, text="Hello"),
+    "sendPhoto": SendPhoto(chat_id=42, photo="example"),
+    "setChatPermissions": SetChatPermissions(chat_id=42, permissions=ChatPermissions()),
     "setWebhook": SetWebhook(url="https://example.test/webhook"),
 }
 

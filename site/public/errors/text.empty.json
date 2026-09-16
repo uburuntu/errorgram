@@ -1,0 +1,80 @@
+{
+  "id": "text.empty",
+  "category": "request_validation",
+  "summary": "The message text is empty.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: message text is empty"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "editMessageText"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The text argument is absent or empty."
+  ],
+  "diagnostic_limits": "This validates the message text input; it does not establish a rule for optional media captions.",
+  "evidence": [
+    {
+      "source": "live-2026-09-16",
+      "note": "sendMessage with empty text returned this description."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        12039,
+        12052
+      ],
+      "note": "Text-message construction rejects empty text before formatting."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13981,
+        13993
+      ],
+      "note": "sendMessage constructs its text with this helper."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13800,
+        13803
+      ],
+      "note": "Method validation errors are passed to the response normalizer."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: message text is empty"
+    }
+  },
+  "evidence_level": "observed",
+  "guidance": {
+    "action": "supply_message_text",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Provide nonempty text appropriate for the selected method."
+    ]
+  }
+}

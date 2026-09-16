@@ -22,6 +22,10 @@
   "diagnostic_limits": "Use the structured replacement identifier; a description alone does not supply the new target.",
   "evidence": [
     {
+      "source": "live-2026-09-16",
+      "note": "getChatAdministrators on an already migrated basic group returned the migration parameter. Its value is synthetic in the report."
+    },
+    {
       "source": "server-10.3",
       "path": "telegram-bot-api/Client.cpp",
       "lines": [
@@ -46,7 +50,7 @@
       }
     }
   },
-  "evidence_level": "source_derived",
+  "evidence_level": "observed",
   "guidance": {
     "action": "migrate_chat_reference",
     "repeat_request": "after_target_update",

@@ -1,0 +1,67 @@
+{
+  "id": "file.url_fetch_failed",
+  "category": "file_input",
+  "summary": "Telegram could not retrieve content from the HTTP URL.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: failed to get HTTP URL content"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendPhoto",
+      "sendDocument"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "Retrieving content from the URL failed."
+  ],
+  "diagnostic_limits": "The response does not distinguish DNS, network, TLS, HTTP, or origin-access failures.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        116,
+        117
+      ],
+      "note": "WEBPAGE_CURL_FAILED is rewritten to this description."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        106
+      ],
+      "note": "The rewrite runs only after the error is normalized to code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendPhoto",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: failed to get HTTP URL content"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "inspect_url_retrieval",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Check that Telegram can retrieve the resource without browser sessions or private-network access; retry only under a bounded policy."
+    ]
+  }
+}

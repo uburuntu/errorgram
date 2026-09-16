@@ -1,0 +1,77 @@
+{
+  "id": "format.entity_not_object",
+  "category": "formatting",
+  "summary": "An item in the message entities array is not a JSON object.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: can't parse MessageEntity: expected an Object"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "sendMessage",
+      "editMessageText",
+      "sendPhoto"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "An entities or caption_entities array contains a non-object item."
+  ],
+  "diagnostic_limits": "This identifies an item-shape failure, not invalid offsets, lengths, or markup syntax.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        11938,
+        11946
+      ],
+      "note": "Entity parsing rejects a non-object item before reading its fields."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        11984,
+        11989
+      ],
+      "note": "The formatting helper wraps the item error in the MessageEntity description with code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        13800,
+        13803
+      ],
+      "note": "Method validation errors are passed to the response normalizer."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "sendMessage",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: can't parse MessageEntity: expected an Object"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "correct_entity_objects",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Provide each entity as an object with the fields required by its type, using the API’s UTF-16 offset convention."
+    ]
+  }
+}

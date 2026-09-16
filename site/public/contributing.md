@@ -25,6 +25,6 @@ Adapters preserve framework fields, catch compatibility, and the original except
 
 The catalogue, generated bindings, documentation, and original project code use the [MIT license](https://github.com/uburuntu/errorgram/blob/main/LICENSE). External source references retain their own licenses.
 
-Have a new response but no complete patch? [Open an issue](https://github.com/uburuntu/errorgram/issues/new) with a sanitized example, the method, framework version, and what you have verified.
+Have a new response but no complete patch? [Try the playground](https://errorgram.rmbk.me/playground/), then [open the unknown-error form](https://github.com/uburuntu/errorgram/issues/new?template=unknown-error.yml) with a sanitized example, the method, framework version, and what you have verified. The form starts empty; the playground never copies your input into it.
 
 [Follow upstream changes](https://errorgram.rmbk.me/updating/) · [Read this page as Markdown](https://errorgram.rmbk.me/contributing.md)

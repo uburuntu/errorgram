@@ -1,0 +1,67 @@
+{
+  "id": "member.is_administrator",
+  "category": "operation_not_allowed",
+  "summary": "The operation was rejected because the target user is a chat administrator.",
+  "match_any": [
+    {
+      "error_code": 400,
+      "description_exact": "Bad Request: user is an administrator of the chat"
+    }
+  ],
+  "scope": {
+    "method_examples": [
+      "banChatMember",
+      "restrictChatMember"
+    ],
+    "exhaustive": false
+  },
+  "possible_causes": [
+    "The requested action targets a chat administrator."
+  ],
+  "diagnostic_limits": "The mapping does not identify the user’s exact administrative role or authorize changing it.",
+  "evidence": [
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        130,
+        132
+      ],
+      "note": "USER_ADMIN_INVALID becomes this description with code 400."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        85,
+        106
+      ],
+      "note": "Uppercase machine-style 403 errors can become 400 before this rewrite."
+    },
+    {
+      "source": "server-10.3",
+      "path": "telegram-bot-api/Client.cpp",
+      "lines": [
+        165,
+        205
+      ],
+      "note": "Adds the code-specific prefix and lowercases only the initial character of ordinary messages."
+    }
+  ],
+  "example": {
+    "method": "banChatMember",
+    "response": {
+      "ok": false,
+      "error_code": 400,
+      "description": "Bad Request: user is an administrator of the chat"
+    }
+  },
+  "evidence_level": "source_derived",
+  "guidance": {
+    "action": "review_target_member_role",
+    "repeat_request": "after_relevant_change",
+    "preconditions": [
+      "Confirm the intended user and current role; any necessary role change must follow the chat’s authorization policy."
+    ]
+  }
+}
